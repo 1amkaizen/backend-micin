@@ -1,0 +1,73 @@
+{# frontend/user/dashboard/partials/ujian_isi.html #}
+{% extends "user/dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="content-wrapper px-3 py-4" style="background-color: #030018; min-height: 100vh; color: white;">
+  <h3 class="section-title mb-4">Ujian Level {{ level }}</h3>
+
+  {% if soal_list|length == 0 %}
+    <div class="alert alert-danger">Belum ada soal untuk level ini.</div>
+  {% else %}
+  <form method="post"
+        action="/ujian/{{ level }}"
+        class="exam-form"
+        onsubmit="return submitUjianForm(this, '{{ level }}')">
+
+    {% for soal in soal_list %}
+    <div class="card mb-4" style="background-color: #1E1E2F; border: none;">
+      <div class="card-body">
+        <p class="fw-bold text-white">Soal {{ loop.index }}:</p>
+        <p class="text-light">{{ soal.question }}</p>
+        <div class="mt-2">
+          {% for opsi in soal.options %}
+          <div class="form-check">
+            <input class="form-check-input bg-dark border-secondary" type="radio"
+                   name="jawaban_{{ soal.id }}"
+                   id="soal_{{ soal.id }}_{{ loop.index0 }}"
+                   value="{{ loop.index0 }}" required>
+            <label class="form-check-label text-light" for="soal_{{ soal.id }}_{{ loop.index0 }}">
+              {{ opsi }}
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit"
+    class="mt-3 px-4 py-2 fw-bold"
+    style="background-color: #FFB514; color: #030018; border: none; border-radius: 8px;">
+Kirim Jawaban
+</button>
+
+  </form>
+  {% endif %}
+</div>
+
+<script>
+function submitUjianForm(form, level) {
+  const formData = new FormData(form);
+  const container = document.querySelector(".content-wrapper");
+  container.innerHTML = "<div class='text-center py-3 text-light'>🔄 Mengirim jawaban...</div>";
+
+  fetch(form.action, {
+    method: "POST",
+    body: formData,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  })
+  .then(res => res.text())
+  .then(html => {
+    container.innerHTML = html;
+    window.scrollTo({ top: container.offsetTop - 50, behavior: 'smooth' });
+  })
+  .catch(err => {
+    container.innerHTML = `<div class="alert alert-danger">❌ Gagal mengirim jawaban: ${err.message}</div>`;
+  });
+
+  return false;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,198 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-3" style="color: #ffb514;">Manajemen Soal Ujian</h2>
+
+  <!-- Form Tambah Soal -->
+  <div class="mb-5">
+    <h4 class="mb-3 text-white">Tambah Soal Baru</h4>
+    <form method="post" action="/admin/exams/add" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label text-white">Level</label>
+        <select name="level" class="form-select bg-dark text-white" required>
+          <option value="SDM">SDM</option>
+          <option value="SMM">SMM</option>
+          <option value="SMA">SMA</option>
+          <option value="UMM">UMM</option>
+        </select>
+      </div>
+      <div class="col-md-9">
+        <label class="form-label text-white">Pertanyaan</label>
+        <textarea name="question" rows="3" class="form-control bg-dark text-white" required></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan A</label>
+        <input type="text" name="option_a" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan B</label>
+        <input type="text" name="option_b" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan C</label>
+        <input type="text" name="option_c" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan D</label>
+        <input type="text" name="option_d" class="form-control bg-dark text-white" required>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label text-white">Jawaban Benar</label>
+        <select name="answer" class="form-select bg-dark text-white" required>
+          <option value="0">A</option>
+          <option value="1">B</option>
+          <option value="2">C</option>
+          <option value="3">D</option>
+        </select>
+      </div>
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-warning">Tambah Soal</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Daftar Soal -->
+  <div class="mb-5">
+    <h4 class="mb-3 text-white">Daftar Soal Ujian</h4>
+    <div class="table-responsive">
+      <table id="exam-table" class="table table-dark table-bordered table-hover table-striped align-middle">
+        <thead class="table-light text-dark">
+          <tr>
+            <th>Level</th>
+            <th>Pertanyaan</th>
+            <th>Opsi</th>
+            <th>Jawaban</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for soal in exams %}
+          <tr>
+            <td>{{ soal.level }}</td>
+            <td>{{ soal.question }}</td>
+            <td>
+              <ul class="mb-0">
+                <li>A: {{ soal.options[0] }}</li>
+                <li>B: {{ soal.options[1] }}</li>
+                <li>C: {{ soal.options[2] }}</li>
+                <li>D: {{ soal.options[3] }}</li>
+              </ul>
+            </td>
+            <td>{{ ['A', 'B', 'C', 'D'][soal.answer] }}</td>
+            <td>
+              <form action="/admin/exams/delete" method="post" class="d-inline">
+                <input type="hidden" name="id" value="{{ soal.id }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus soal ini?')">Hapus</button>
+              </form>
+              <button type="button" class="btn btn-secondary btn-sm"
+                onclick="editExam('{{ soal.id }}', '{{ soal.level }}', `{{ soal.question }}`, `{{ soal.options[0] }}`, `{{ soal.options[1] }}`, `{{ soal.options[2] }}`, `{{ soal.options[3] }}`, '{{ soal.answer }}')">
+                Edit
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Form Edit Soal -->
+  <div id="exam-edit-form" style="display: none;" class="mb-5">
+    <h4 class="mb-3 text-white">Edit Soal</h4>
+    <form method="post" action="/admin/exams/edit" class="row g-3">
+      <input type="hidden" name="id" id="exam-edit-id">
+
+      <div class="col-md-3">
+        <label class="form-label text-white">Level</label>
+        <select name="level" id="edit-level" class="form-select bg-dark text-white" required>
+          <option value="SDM">SDM</option>
+          <option value="SMM">SMM</option>
+          <option value="SMA">SMA</option>
+          <option value="UMM">UMM</option>
+        </select>
+      </div>
+      <div class="col-md-9">
+        <label class="form-label text-white">Pertanyaan</label>
+        <textarea name="question" id="edit-question" rows="3" class="form-control bg-dark text-white" required></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan A</label>
+        <input type="text" name="option_a" id="edit-option-a" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan B</label>
+        <input type="text" name="option_b" id="edit-option-b" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan C</label>
+        <input type="text" name="option_c" id="edit-option-c" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label text-white">Pilihan D</label>
+        <input type="text" name="option_d" id="edit-option-d" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-white">Jawaban Benar</label>
+        <select name="answer" id="edit-answer" class="form-select bg-dark text-white" required>
+          <option value="0">A</option>
+          <option value="1">B</option>
+          <option value="2">C</option>
+          <option value="3">D</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelEditExam()">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  function editExam(id, level, question, a, b, c, d, answer) {
+    document.getElementById("exam-edit-id").value = id;
+    document.getElementById("edit-level").value = level;
+    document.getElementById("edit-question").value = question;
+    document.getElementById("edit-option-a").value = a;
+    document.getElementById("edit-option-b").value = b;
+    document.getElementById("edit-option-c").value = c;
+    document.getElementById("edit-option-d").value = d;
+    document.getElementById("edit-answer").value = answer;
+    document.getElementById("exam-edit-form").style.display = "block";
+    window.scrollTo({ top: document.getElementById("exam-edit-form").offsetTop - 100, behavior: 'smooth' });
+  }
+
+  function cancelEditExam() {
+    document.getElementById("exam-edit-form").style.display = "none";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    new DataTable('#exam-table', {
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ soal",
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ soal",
+        paginate: {
+          previous: "Sebelumnya",
+          next: "Berikutnya"
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .dataTables_wrapper,
+  .dataTables_wrapper label,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+  }
+</style>
+{% endblock %}

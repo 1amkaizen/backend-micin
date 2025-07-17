@@ -1,0 +1,107 @@
+{# frontend/admin/kelola_transaksi.html #}
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4" style="color: #ffb514;">Kelola Transaksi</h2>
+
+  <!-- Tab Filter Tipe Transaksi -->
+  <ul class="nav nav-tabs mb-3" id="filter-tabs">
+    <li class="nav-item">
+      <button class="nav-link active" data-filter="all">Semua</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-filter="vip">VIP</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-filter="addon_sma">Addon SMA</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-filter="addon_umm">Addon UMM</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-filter="solana">Ecer</button>
+    </li>
+  </ul>
+
+  <!-- Tabel Transaksi -->
+  <div class="table-responsive">
+    <table id="tabel-transaksi" class="table table-dark table-bordered table-hover table-striped align-middle">
+      <thead class="table-light text-dark">
+        <tr>
+          <th>Username</th>
+          <th>Order ID</th>
+          <th>Tipe</th>
+          <th>Status</th>
+          <th>Amount</th>
+          <th>Waktu</th>
+          <th>Channel</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trx in transactions %}
+        <tr data-tipe="{{ (trx.parsed_tipe or 'unknown') | lower }}">
+          <td>{{ trx.username or '-' }}</td>
+          <td>{{ trx.order_id or '-' }}</td>
+          <td>{{ trx.parsed_tipe|capitalize or '-' }}</td>
+          <td>{{ trx.transaction_status or '-' }}</td>
+          <td>{{ '{:,.0f}'.format(trx.gross_amount or 0) }}</td>
+          <td>{{ trx.transaction_time or '-' }}</td>
+          <td>{{ 'bot' if 'BOT' in (trx.order_id or '') else 'web' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Inisialisasi DataTables
+    const dataTable = new DataTable('#tabel-transaksi', {
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ transaksi",
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ transaksi",
+        paginate: {
+          previous: "Sebelumnya",
+          next: "Berikutnya"
+        }
+      }
+    });
+
+    // Gunakan DataTables column search
+    document.querySelectorAll('#filter-tabs button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Ganti class active
+        document.querySelectorAll('#filter-tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tipe = btn.dataset.filter;
+
+        if (tipe === 'all') {
+          dataTable.column(2).search('').draw();  // Kolom ke-3 (indeks ke-2) = Tipe
+        } else {
+          dataTable.column(2).search('^' + tipe + '$', true, false).draw();
+        }
+      });
+    });
+
+    // Trigger tab awal
+    document.querySelector('#filter-tabs button[data-filter="all"]').click();
+  });
+</script>
+
+
+<style>
+  .dataTables_wrapper,
+  .dataTables_wrapper label,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+  }
+</style>
+
+{% endblock %}

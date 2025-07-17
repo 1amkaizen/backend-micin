@@ -1,0 +1,40 @@
+<h1  style="color: #FFB514;">Sekolah Menengah Micin (SMM)</h1>
+<p class="lead">Di tahap ini kamu belajar lebih dalam tentang strategi dan praktik investasi kripto!</p>
+
+<h3 class="mt-4 mb-3">Modul Terbuka</h3>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 modules" role="list">
+  {% for modul in modules %}
+  <article class="col" role="listitem">
+    <div class="module-card h-100" tabindex="0" aria-label="Modul {{ modul.order_index }} {{ modul.title }}">
+      <img src="{{ modul.thumbnail_url or '' }}" alt="{{ modul.title }}" loading="lazy" onerror="this.style.display='none'" />
+      <div class="module-body">
+        <div class="module-label">Modul {{ modul.order_index }}</div>
+        <h4 class="module-title">{{ modul.title }}</h4>
+        <p class="module-desc">{{ modul.description or "" }}</p>
+        {% if modul.is_unlocked %}
+        <a href="/{{ modul.level | lower }}/modul/{{ modul.id }}" class="btn btn-module">Mulai</a>
+        {% else %}
+          <button class="btn btn-secondary" disabled>Terkunci</button>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<div id="ujian-section" class="text-center mt-5"></div>
+
+<script>
+fetch("/ujian/cek/{{ level }}")
+  .then(res => res.json())
+  .then(data => {
+    if (data.boleh_ujian) {
+      const div = document.getElementById("ujian-section");
+      const button = document.createElement("a");
+      button.href = "/ujian/{{ level }}";
+      button.textContent = "🎓 Mulai Ujian Akhir";
+      button.className = "btn btn-success";
+      div.appendChild(button);
+    }
+  });
+</script>

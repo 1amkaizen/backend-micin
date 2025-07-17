@@ -1,0 +1,308 @@
+
+:root {
+  --background-dark: #030018;
+  --sidebar-dark: #030018;
+  --primary-yellow: #fbbc04;
+  --sidebar-hover: #3a2e58;
+  --text-light: #dededf;
+  --text-muted: #6c6c7a;
+  --card-bg-1: #7e5bbe;
+  --card-bg-2: #3a5a79;
+  --card-bg-3: #8f7c39;
+  --card-bg-4: #864a44;
+}
+body {
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.sidebar {
+  background-color: var(--sidebar-dark);
+  min-height: 100vh;
+  z-index: 1030;
+}
+.sidebar .nav-link {
+  color: var(--text-light);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  margin-bottom: 0.3rem;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--primary-yellow);
+}
+.sidebar .nav-link svg {
+  margin-right: 0.6rem;
+  stroke: var(--text-light);
+  transition: stroke 0.2s ease;
+}
+.sidebar .nav-link.active svg,
+.sidebar .nav-link:hover svg {
+  stroke: var(--primary-yellow);
+}
+.sidebar .logo-text {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--text-light);
+  user-select: none;
+  letter-spacing: 0.11rem;
+}
+.sidebar .logo-icon {
+  width: 30px;
+  height: 30px;
+  stroke: var(--text-light);
+  margin-right: 0.6rem;
+}
+.content-header h1 {
+  color: var(--primary-yellow);
+  font-weight: 700;
+}
+.content-header small {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.card-custom {
+  background-color: #1d1d2e;
+  border-radius: 1rem;
+  border: 1px solid #2e2e42;
+}
+/* Bitcoin mining banner */
+.banner {
+  position: relative;
+  background-color: #0ca678;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: #fff;
+  overflow: hidden;
+}
+.banner h2 {
+  font-weight: 900;
+  font-size: 2.2rem;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.1rem;
+  line-height: 1.1;
+}
+.banner .highlight {
+  color: #fcdc3b;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+.banner p {
+  max-width: 400px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+.banner img {
+  height: 120px;
+  user-select: none;
+}
+/* Profile box style */
+.profile-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.profile-box img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-yellow);
+}
+.profile-box .name {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.profile-box .vip {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--primary-yellow);
+  font-weight: 600;
+}
+.profile-box .vip svg {
+  stroke-width: 2;
+  width: 16px;
+  height: 16px;
+}
+/* Progress bar and tests */
+.progress-label {
+  font-weight: 700;
+  color: var(--primary-yellow);
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
+}
+.progress-bar-yellow {
+  background-color: var(--primary-yellow);
+}
+.test-score {
+  font-weight: 700;
+}
+.test-label {
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+.btn-yellow {
+  background-color: var(--primary-yellow);
+  border: none;
+  font-weight: 700;
+  color: #12121f;
+  border-radius: 2rem;
+  padding: 0.4rem 1.5rem;
+  transition: background-color 0.3s ease;
+}
+.btn-yellow:hover {
+  background-color: #e6b800;
+  color: #12121f;
+}
+/* Statistik Komunitas cards */
+.stats-card {
+  border-radius: 1rem;
+  color: #fff;
+  padding: 1.2rem 1.5rem;
+  user-select: none;
+}
+.stats-card .icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.7rem;
+}
+.stats-card .title {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.stats-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+}
+.stats-card .growth {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* Activities area */
+.activities {
+  margin-top: 1rem;
+  user-select: none;
+}
+.activities .activity {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.activities .activity-icon {
+  flex-shrink: 0;
+  background-color: #222233;
+  padding: 0.5rem;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--primary-yellow);
+  user-select: none;
+}
+.activities .activity-content {
+  flex-grow: 1;
+}
+.activities .activity-content strong {
+  color: var(--primary-yellow);
+  font-weight: 700;
+}
+.activities .activity-content small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+/* Footer Support links */
+.support {
+  margin-top: 2rem;
+  user-select: none;
+}
+.support a {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--text-light);
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  user-select: none;
+}
+.support a:hover {
+  color: var(--primary-yellow);
+  text-decoration: underline;
+}
+.support svg {
+  width: 28px;
+  height: 28px;
+  color: var(--primary-yellow);
+  user-select: none;
+}
+/* Collapse toggle button */
+#sidebarCollapseBtn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.35rem;
+  margin-left: 0.8rem;
+  margin-top: 0.4rem;
+  user-select: none;
+  cursor: pointer;
+}
+.navbar-light .navbar-toggler {
+  border-color: var(--primary-yellow);
+}
+
+
+/* Scrollbar for sidebar */
+.sidebar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-yellow) transparent;
+}
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--primary-yellow);
+  border-radius: 10px;
+}
+/* Responsive styling */
+@media (max-width: 991.98px) {
+  #sidebarCollapseBtn {
+    margin-left: 0;
+  }
+}
+/* Hide nested submenu arrow for collapsed */
+.nav-link.collapsed > svg.arrow-icon {
+  transform: rotate(-90deg);
+  transition: transform 0.3s ease;
+}
+.nav-link > svg.arrow-icon {
+  transition: transform 0.3s ease;
+  margin-left: auto;
+}

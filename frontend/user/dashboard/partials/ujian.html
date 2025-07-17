@@ -1,0 +1,117 @@
+<div class="content-wrapper">
+  <!-- Introduction -->
+  <h3 class="section-title">Ujian Micin</h3>
+  <p class="description-text">
+    Ujian Micin adalah serangkaian tes yang dirancang untuk menguji pemahaman Anda tentang perdagangan meme coin dan strategi investasi di pasar kripto. Setiap level ujian mewakili tingkat kesulitan yang berbeda, mulai dari pemula hingga mahir.
+  </p>
+
+  <!-- Summary Cards -->
+  <div class="row g-3 summary-cards">
+    <div class="col-12 col-md-4">
+      <div class="card">
+        <div>Total Ujian Selesai</div>
+        <div class="number" style="color: #FFB514;">{{ total_selesai }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card">
+        <div>Rata-rata Skor</div>
+        <div class="number" style="color: #28C840;">{{ rata_rata }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card">
+        <div>Ujian Lulus</div>
+        <div class="number" style="color: #0A80ED;">{{ total_lulus }}</div>
+      </div>
+    </div>
+  </div>
+
+  {% set ordered_levels = ["SDM", "SMM", "SMA", "UMM"] %}
+  {% for level in ordered_levels if level in exams_per_level %}
+    {% set exams = exams_per_level[level] %}
+    {% set user_results = results_map[level] if level in results_map else [] %}
+    {% set gagal_count = (filtered_gagal_map[level] | length) if level in filtered_gagal_map else 0 %}
+    {% set sudah_lulus = user_results | selectattr("passed", "equalto", true) | list | length > 0 %}
+
+    <section class="level-section mt-4">
+      <h4>Level {{ level }}</h4>
+      <div class="row g-3">
+
+        {# Tampilkan hasil ujian sebelumnya #}
+        {% for result in user_results %}
+        <div class="col-12 col-md-6">
+          <div class="exam-card h-100 d-flex flex-column">
+            <strong class="title">Ujian {{ level }} Percobaan ke-{{ loop.index }}</strong>
+
+            <div class="d-flex justify-content-between">
+              <span>Sudah Diikuti</span>
+              <span>Status:
+                <strong>{{ "Lulus" if result.passed else "Tidak Lulus" }}</strong>
+              </span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-1">
+              <span>Skor</span>
+              <strong>{{ result.score }}/100</strong>
+            </div>
+
+            {% if result.passed %}
+            <a href="/static/sertifikat/sertifikat_{{ telegram_id }}_{{ level }}.pdf" target="_blank" class="btn btn-primary mt-auto mt-3">
+              Lihat Ijazah
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+
+        {# Tombol Ikuti Ujian #}
+        {% if user_results | length == 0 %}
+        <div class="col-12 col-md-6">
+          <div class="exam-card h-100 d-flex flex-column">
+            <strong class="title">Ujian {{ level }}</strong>
+
+            <div class="d-flex justify-content-between">
+              <span>Belum Diikuti</span>
+              <span>Status: <strong>-</strong></span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-1">
+              <span>Skor</span>
+              <strong>0/100</strong>
+            </div>
+
+            <a href="/ujian/{{ level }}" class="btn btn-primary mt-auto mt-3">Ikuti Ujian</a>
+          </div>
+        </div>
+
+        {% elif not sudah_lulus and gagal_count < 3 %}
+        <div class="col-12 col-md-6">
+          <div class="exam-card h-100 d-flex flex-column">
+            <strong class="title">Ujian {{ level }}</strong>
+
+            <div class="d-flex justify-content-between">
+              <span>Belum Lulus</span>
+              <span>Status: <strong>Tidak Lulus</strong></span>
+            </div>
+
+            <div class="d-flex justify-content-between mt-1">
+              <span>Skor</span>
+              <strong>0/100</strong>
+            </div>
+
+            <a href="/ujian/{{ level }}" class="btn btn-primary mt-auto mt-3">Coba Lagi</a>
+          </div>
+        </div>
+
+        {% elif not sudah_lulus and gagal_count >= 3 %}
+        <div class="col-12">
+          <div class="alert alert-warning">
+            Anda telah gagal 3x di level {{ level }}. Silakan ulangi modul sebelum ujian ulang.
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+  {% endfor %}
+</div>

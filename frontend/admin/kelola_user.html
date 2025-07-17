@@ -1,0 +1,77 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4" style="color: #ffb514;">Kelola User</h2>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <div class="table-responsive">
+    <table id="example" class="table table-dark table-bordered table-hover table-striped align-middle">
+      <thead class="table-light text-dark">
+        <tr>
+          <th>Username</th>
+          <th>Full Name</th>
+          <th>Status VIP</th>
+          <th>Status Aktif</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <form method="post" action="/admin/edit-user">
+            <td>{{ u.username or '' }}</td>
+            <td>{{ u.full_name or '' }}</td>
+            <td>
+              <select name="is_vip" class="form-select bg-dark text-light">
+                <option value="true" {% if u.is_vip %}selected{% endif %}>Ya</option>
+                <option value="false" {% if not u.is_vip %}selected{% endif %}>Tidak</option>
+              </select>
+            </td>
+            <td>
+              <select name="is_active" class="form-select bg-dark text-light">
+                <option value="true" {% if u.is_active %}selected{% endif %}>Aktif</option>
+                <option value="false" {% if not u.is_active %}selected{% endif %}>Nonaktif</option>
+              </select>
+            </td>
+            <td>
+              <input type="hidden" name="id" value="{{ u.id }}" />
+              <button type="submit" class="btn btn-warning btn-sm">Simpan</button>
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    new DataTable('#example', {
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ entri",
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ user",
+        paginate: {
+          previous: "Sebelumnya",
+          next: "Berikutnya"
+        }
+      }
+    });
+  });
+</script>
+<style>
+  .dataTables_wrapper,
+  .dataTables_wrapper label,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+  }
+</style>
+{% endblock %}

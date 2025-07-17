@@ -1,0 +1,188 @@
+
+/* Heading */
+h1, h4 {
+  font-weight: 700;
+}
+h3 {
+  font-weight: 600;
+}
+/* VIP Highlight text */
+.highlight {
+  color: #ffc107;
+}
+/* Card image style */
+.vip-card img {
+  border-radius: 15px;
+  object-fit: cover;
+  height: 140px;
+  width: 100%;
+  transition: transform 0.3s ease;
+  background-color: #222537;
+}
+.vip-card img:hover {
+  transform: scale(1.05);
+}
+/* Button style */
+.btn-upgrade {
+  background-color: #ffc107;
+  color: #0a0a19;
+  font-weight: 600;
+  padding: 0.6rem 2.4rem;
+  border: none;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  margin-top: 1.5rem;
+  display: inline-block;
+  text-align: center;
+}
+.btn-upgrade:hover {
+  background-color: #cc9a06;
+  color: #fff;
+}
+.payment-section {
+  width: 912px;
+  max-width: 100%;
+  border: 1px solid #ffffff;
+  border-radius: 30px;
+  padding: 26px;
+  background-color: rgba(20, 20, 38, 0.7);
+  box-sizing: border-box;
+  margin: 3rem auto 0; /* tengahin */
+}
+.payment-section h5 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.payment-section p {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+
+.payment-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  width: 254px;
+  height: 64px;
+}
+
+.btn-payment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  height: 40px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 21px;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.2);
+  transition: box-shadow 0.25s ease;
+  min-width: 113px; /* untuk tombol Solana */
+}
+
+.btn-telegram {
+  background-color: #0a80ed;
+  width: 129px;
+}
+
+.btn-solana {
+  background-color: #9947eb;
+  width: 113px;
+}
+
+
+.btn-payment:hover {
+  box-shadow: 0 6px 12px rgb(0 0 0 / 0.4);
+}
+
+.payment-section hr {
+  border: none;
+  height: 2px;
+  background-color: #ffffff; /* Putih solid */
+  margin: 2rem 0;
+  opacity: 0.9; /* Sedikit transparan, opsional */
+}
+
+.testimoni {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.testimonial-card {
+  width: 268px;
+  min-width: 160px;
+  padding: 16px;
+  border-radius: 8px;
+
+  /* ini bikin transparan */
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.testimonial-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.testimonial-card p {
+  font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 32px;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.person-info {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #FFB514;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .main-content {
+    margin-left: 0;
+    padding: 2rem 1rem 3rem;
+  }
+  .sidebar {
+    position: relative;
+    width: 100%;
+    border-radius: 0;
+    min-height: auto;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
+  .testimoni {
+    justify-content: center;
+  }
+  .testimonial-card {
+    max-width: 100%;
+    min-height: auto;
+  }
+}

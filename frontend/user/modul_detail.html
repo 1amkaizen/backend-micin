@@ -1,0 +1,53 @@
+{# frontend/user/sdm_modul_detail.html #}
+{% extends "user/dashboard/base_dashboard.html" %}
+
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-3" style="color: #FFB514;">{{ modul.title }}</h1>
+
+  <p class="text-white">{{ modul.description or "" }}</p>
+
+  <!-- Video player -->
+  <div class="ratio ratio-16x9 mb-4">
+    <iframe
+      id="vimeo-player"
+      src="{{ modul.video_url }}"
+      frameborder="0"
+      allow="autoplay; fullscreen"
+      allowfullscreen
+    ></iframe>
+  </div>
+
+  <!-- Status penanda selesai -->
+  <div id="status" class="mt-3">
+    {% if is_completed %}
+      <div class="alert alert-success">
+        ✅ Modul ini sudah selesai kamu pelajari.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Vimeo Player API -->
+  <script src="https://player.vimeo.com/api/player.js"></script>
+  <script>
+    const iframe = document.getElementById('vimeo-player');
+    const player = new Vimeo.Player(iframe);
+    const status = document.getElementById('status');
+
+    player.on('ended', function () {
+      fetch("/modul/{{ modul.id }}/selesai", {
+        method: "POST"
+      })
+      .then(() => {
+        status.innerHTML = `
+          <div class="alert alert-success">
+            ✅ Modul ini sudah selesai kamu pelajari.
+          </div>`;
+      })
+      .catch(err => {
+        console.error("Gagal menandai selesai:", err);
+      });
+    });
+  </script>
+{% endblock %}

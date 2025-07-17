@@ -1,0 +1,55 @@
+{# File: frontend/user/dashboard/partials/download.html #}
+<div class="content-wrapper px-3 py-4" style="background-color: #030018; min-height: 100vh; color: white;">
+  <h3 class="section-title mb-4">📄 Download Sertifikat</h3>
+
+  {% if summary.ujian %}
+    {% set list = summary.ujian.items() | selectattr("1.sertifikat_url") | list %}
+
+    {% if list %}
+      <div class="row g-4">
+        {% for level, info in list %}
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card bg-dark text-white shadow-sm h-100 border-0" style="border-radius: 16px;">
+            <div class="card-body d-flex flex-column justify-content-between">
+        
+              <div>
+                <span class="badge bg-success mb-2" style="width: fit-content;">✅ Telah Lulus</span>
+                <h5 class="card-title mb-2">Level {{ level }}</h5>
+                <p class="mb-3">Skor: <strong>{{ info.score }}</strong></p>
+        
+                <iframe src="{{ info.sertifikat_url }}#toolbar=0&navpanes=0&scrollbar=0"
+                        style="width: 100%; height: 200px; border-radius: 12px; border: 1px solid #444;"
+                        class="mb-3"
+                ></iframe>
+              </div>
+        
+              <a href="{{ info.sertifikat_url }}" target="_blank"
+                 class="btn mt-auto fw-bold"
+                 style="
+                   background-color: #FFB514;
+                   color: #030018;
+                   border-radius: 12px;
+                   transition: all 0.3s ease;
+                 "
+                 onmouseover="this.style.opacity='0.85'"
+                 onmouseout="this.style.opacity='1'"
+              >
+                🎓 Download Sertifikat
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info mt-4">
+        Kamu belum memiliki sertifikat yang bisa diunduh.
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-warning mt-4">
+      Data sertifikat belum tersedia. Silakan muat ulang halaman.
+    </div>
+  {% endif %}
+</div>

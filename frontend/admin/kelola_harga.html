@@ -1,0 +1,66 @@
+<!-- file: frontend/templates/admin/kelola_harga.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container py-4" style="background-color: #030018; min-height: 100vh; color: #fff;">
+  <h2 class="mb-4" style="color: #ffb514;">Kelola Harga</h2>
+
+  <form id="formHarga" method="post" action="/admin/dashboard/kelola-harga/update">
+    
+    <!-- ================= Harga Utama ================= -->
+    <div class="row">
+      {% for key, val in harga.items() %}
+        <div class="col-md-4 mb-3">
+          <label for="{{ key }}" class="form-label text-uppercase text-white small fw-semibold">{{ key.replace('_', ' ') }}</label>
+          <input type="number" class="form-control" id="{{ key }}" name="{{ key }}" value="{{ val }}" min="0" required>
+        </div>
+      {% endfor %}
+    </div>
+
+    <hr class="border-light my-4">
+
+    <!-- ================= Harga Ecer ================= -->
+    <h4 class="mb-3" style="color: #ffb514;">Harga Ecer (Solana)</h4>
+    <div class="row">
+      {% for item in ecer_prices %}
+        <div class="col-md-3 col-sm-6 mb-3">
+          <label for="ecer_price_{{ item.id }}" class="form-label text-white small fw-semibold">Ecer #{{ loop.index }}</label>
+          <input type="number" class="form-control" id="ecer_price_{{ item.id }}" name="ecer_price_{{ item.id }}" value="{{ item.price }}" min="0" required>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-end mt-4">
+      <button type="submit" class="btn fw-bold px-4 py-2" style="background-color: #ffb514; color: #030018;">
+        Simpan Semua Harga
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('formHarga');
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    const response = await fetch('/admin/dashboard/kelola-harga/update', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      alert('Harga berhasil disimpan');
+      location.reload();
+    } else {
+      alert('Gagal menyimpan harga');
+    }
+  });
+</script>
+{% endblock %}

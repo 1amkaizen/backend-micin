@@ -1,0 +1,59 @@
+{# frontend/user/dashboard/partials/hasil_ujian.html #}
+
+{% block content %}
+<div class="content-wrapper px-3 py-4" style="min-height: 100vh; color: white;">
+  <h3 class="section-title mb-4">🎓 Hasil Ujian - Level {{ level }}</h3>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+      <div class="card shadow-lg border-0 rounded-4" style="background-color: #1c1234;">
+        <div class="card-body py-4 px-4">
+
+          {% if pesan_error %}
+            <div class="alert alert-danger">
+              ⚠️ {{ pesan_error }}
+            </div>
+          {% else %}
+            <h5 class="card-title mb-3 text-white">📊 Ringkasan Ujian</h5>
+
+            <ul class="list-group list-group-flush mb-3" style="background-color: transparent;">
+              <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                <span>Skor Kamu</span>
+                <strong>{{ nilai }} / 100</strong>
+              </li>
+              <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                <span>Percobaan Ke-</span>
+                <strong>{{ attempt }}</strong>
+              </li>
+              <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                <span>Jawaban Benar</span>
+                <strong>{{ benar }} dari {{ total }} soal</strong>
+              </li>
+            </ul>
+
+            {% if lulus %}
+              <div class="alert alert-success">
+                ✅ Selamat! Kamu <strong>LULUS</strong> ujian.
+              </div>
+
+              {% if filename %}
+                <div class="text-center mt-4">
+                  <a href="/static/sertifikat/{{ filename }}" class="btn btn-lg px-4 fw-bold"
+                     style="background-color: #FFB514; color: #030018; border-radius: 10px;">
+                    📥 Download Sertifikat
+                  </a>
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="alert alert-warning">
+                ❌ Kamu <strong>BELUM LULUS</strong>. Silakan ulangi modul terlebih dahulu sebelum mencoba lagi.
+              </div>
+            {% endif %}
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+<!-- File: frontend/user/dashboard/partials/sol.html -->
+<section class="container py-5">
+  <div class="text-center mb-5">
+    <h1 class="fw-bold" style="font-size: 40px; color: #FFB514;">Beli Solana Eceran</h1>
+
+    <p class="text-white fs-5">
+      Beli Solana dengan mudah langsung dari website kami.
+    </p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg border-0" style="background-color: #1a1a3d; border-radius: 16px;">
+        <div class="card-body text-white">
+
+          <p class="mb-4"><strong>📘 Panduan:</strong></p>
+          <ul class="list-unstyled text-white fs-6" style="line-height: 1.6;">
+            <li>➡️ Isi <strong>nama lengkap</strong> dan <strong>wallet Solana</strong> kamu.</li>
+            <li>➡️ Pilih nominal pembelian yang kamu inginkan.</li>
+            <li>➡️ Pembayaran dilakukan via <strong>Midtrans</strong>.</li>
+            <li>➡️ Solana akan dikirim manual oleh admin setelah pembayaran diterima.</li>
+          </ul>
+          
+          
+
+          <form id="solanaForm" onsubmit="return false;">
+            <div class="mb-3">
+              <label class="form-label">Nama Lengkap</label>
+              <input type="text" name="full_name" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Wallet Solana</label>
+              <input type="text" name="wallet" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nominal Pembelian</label>
+              <div class="d-flex flex-wrap gap-2">
+                {% for item in ecer_prices %}
+                  <input type="radio" class="btn-check" name="nominal" id="nom{{ item.price }}" value="{{ item.price }}" required />
+                  <label class="btn btn-outline-warning fw-bold" for="nom{{ item.price }}">
+                    Rp {{ "{:,.0f}".format(item.price).replace(",", ".") }}
+                  </label>
+                {% endfor %}
+              </div>
+            </div>
+            
+
+            <div class="d-grid">
+              <button type="submit" class="btn fw-bold" style="background-color: #FFB514; color: black;">
+                <i class="bi bi-credit-card me-1"></i> Bayar Sekarang
+              </button>
+            </div>
+            <div class="text-center mt-3">
+              <a href="https://t.me/prossultan" target="_blank" class="btn btn-sm btn-outline-light">
+                <i class="bi bi-telegram me-1"></i> Hubungi Admin di Telegram
+              </a>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  

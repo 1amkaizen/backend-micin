@@ -1,0 +1,29 @@
+<!-- file: frontend/templates/admin/partials/profile.html -->
+<section class="profile-box d-flex align-items-center gap-3 mb-4">
+  {% if user_photo %}
+    <img src="https://images.weserv.nl/?url={{ user_photo | replace('https://', '') }}"
+         class="rounded-circle"
+         width="64" height="64"
+         style="object-fit: cover;" />
+  {% else %}
+    <i class="bi bi-person-circle text-white fs-1"></i>
+  {% endif %}
+
+  <div class="text-white">
+    <!-- Nama -->
+    <div class="name fw-semibold fs-5">{{ admin_email }}</div>
+
+    <!-- Status Admin -->
+    {% if admin_role == 'superadmin' %}
+      <div class="vip d-flex align-items-center mt-1" style="color: #FFB514;">
+        <i class="bi bi-shield-lock"></i> Superadmin
+      </div>
+    {% else %}
+      <div class="vip text-danger mt-1">
+        <i class="bi bi-shield-slash"></i>Admin
+      </div>
+    {% endif %}
+
+
+  </div>
+</section>

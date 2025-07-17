@@ -1,0 +1,125 @@
+.content-wrapper {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: auto;
+}
+h3.section-title {
+  color: #FFb514;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.summary-cards .card {
+  background-color: #e9e9e9;
+  color: #0d0b1e;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  box-shadow: 0 5px 10px rgb(0 0 0 / 0.1);
+}
+.summary-cards .card .number {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.summary-cards .card:nth-child(1) .number {
+  color: #FFb514;
+}
+.summary-cards .card:nth-child(2) .number {
+  color: #28C840;
+}
+.summary-cards .card:nth-child(3) .number {
+  color: #0A80ED;
+}
+/* Exam Card styles */
+.exam-card {
+  border: 1px solid #555571;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  background-color: #121023;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #e6e6e6;
+  height: 100%;
+  justify-content: space-between;
+}
+.exam-card strong.title {
+  font-size: 1.05rem;
+}
+.exam-card .row-status-score {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #cccccc;
+  padding-top: 0.25rem;
+}
+.exam-card .btn-primary {
+  background-color: #7e48f4;
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-self: flex-end;
+  padding: 0.35rem 1.1rem;
+  border-radius: 20px;
+}
+.exam-card .btn-primary:hover {
+  background-color: #6519e6;
+}
+/* Sections */
+section.level-section {
+  margin-top: 2rem;
+}
+section.level-section h4 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  user-select: none;
+}
+/* Button lihat selengkapnya */
+.btn-view-more {
+  background-color: #f4b51d;
+  border: none;
+  color: #0d0b1e;
+  font-weight: 700;
+  border-radius: 30px;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.1rem;
+  display: block;
+  margin: 3rem auto 2rem auto;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+.btn-view-more:hover {
+  background-color: #d4991a;
+  color: #000;
+}
+/* Description text */
+.description-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 900px;
+  margin-bottom: 2.5rem;
+  user-select: text;
+}
+/* Responsive Fixes */
+@media (max-width: 767.98px) {
+  #sidebar {
+      min-height: auto;
+      padding-bottom: 1rem;
+  }
+  .summary-cards .card .number {
+      font-size: 1.5rem;
+  }
+  .exam-card .row-status-score {
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+  }
+  .exam-card {
+      padding: 1rem;
+  }
+  .btn-view-more {
+      width: 100%;
+      padding: 0.75rem 0;
+      font-size: 1rem;
+  }
+}

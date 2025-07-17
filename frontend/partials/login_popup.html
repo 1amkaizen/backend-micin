@@ -1,0 +1,40 @@
+<!-- File: frontend/partials/login_popup.html -->
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="popup-overlay" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white rounded-4 shadow-lg">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Login dengan Telegram</h5>
+        <button type="button" class="btn-close btn-close-white" onclick="hideLogin()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <script
+          async
+          src="https://telegram.org/js/telegram-widget.js?7"
+          data-telegram-login="{{ telegram_login_username }}"
+          data-size="large"
+          data-userpic="false"
+          data-request-access="write"
+          data-auth-url="{{ BASE_URL }}/login">
+        </script>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function showLogin() {
+    const modal = new bootstrap.Modal(document.getElementById('popup-overlay'));
+    modal.show();
+  }
+
+  function hideLogin() {
+    const modalEl = document.getElementById('popup-overlay');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+  }
+</script>

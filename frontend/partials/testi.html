@@ -1,0 +1,40 @@
+<style>
+  @media (max-width: 768px) {
+    .bg-testimoni {
+      display: none !important;
+    }
+
+    .img-testimoni {
+      display: block !important;
+      max-width: 100%;
+      height: auto;
+      border-radius: 1rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .img-testimoni {
+      display: none !important;
+    }
+  }
+</style>
+
+<!-- File: frontend/partials/testi.html -->
+<section class="container py-5">
+  <div class="row justify-content-center text-center">
+    <div class="col-lg-10 px-3 px-md-5">
+      <h5 class="fw-bold text-white mb-4" style="font-size: 1.25rem; line-height: 2rem;">
+        📈 Sudah hampir <span style="color: #ffb514;">3000++ orang</span> merasakan manfaat <span style="color: #ffb514;">VIP</span>.<br>
+        Banyak yang balik modal dalam hitungan jam!
+      </h5>
+
+      <!-- Background versi desktop -->
+      <div class="bg-testimoni rounded-4 mx-auto"
+           style="width: 100%; max-width: 850px; height: 460px; background: url('/static/img/TESTIMONI.png') center center / cover no-repeat;">
+      </div>
+
+      <!-- Gambar img versi mobile -->
+      <img src="/static/img/TESTIMONI.png" alt="Testimoni VIP" class="img-testimoni mx-auto mt-3">
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+<!-- Statistik Pertumbuhan Anggota -->
+<section class="card p-4 mb-4 w-100" style="background-color: #1e1e2f; border-radius: 12px; border: 1px solid #DEE0E3;">
+  <!-- Judul -->
+  <div class="mb-2">
+    <div class="text-white fw-medium" style="font-size: 16px; line-height: 24px; font-family: 'Poppins', sans-serif;">
+      Pertumbuhan Anggota
+    </div>
+  </div>
+
+<!-- Nilai Utama -->
+<div class="mb-1">
+  <div class="text-white fw-bold" style="font-size: 32px; line-height: 40px; font-family: 'Poppins', sans-serif;">
+    {{ user_growth_percent }}%
+  </div>
+</div>
+
+<!-- Label Bulan Ini -->
+<div class="d-flex gap-2 align-items-center mb-4">
+  <div class="text-white" style="font-size: 16px; font-family: 'Poppins', sans-serif;">Bulan Ini</div>
+  <div class="fw-medium" style="font-size: 16px; color: #088738; font-family: 'Poppins', sans-serif;">
+    {{ user_growth_percent }}%
+  </div>
+</div>
+
+
+  <!-- Bar Chart -->
+  <div class="d-flex justify-content-between align-items-end flex-wrap px-2" style="height: 220px;">
+    {% for item in anggota_growth_data %}
+      <div class="d-flex flex-column align-items-center flex-fill" style="max-width: 14.28%; padding: 0 4px;">
+        <!-- Bar Container -->
+        <div class="w-100 position-relative" style="height: 150px; background-color: #F2F2F2; border-radius: 6px;">
+          <div class="position-absolute bottom-0 start-0 w-100"
+               style="height: {{ item.percent }}%; background-color: #FFB514; border-radius: 6px 6px 0 0;">
+          </div>
+        </div>
+        <!-- Label -->
+        <div class="pt-2 text-white fw-semibold" style="font-size: 13px; font-family: 'Poppins', sans-serif;">
+          {{ item.label }}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>

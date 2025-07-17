@@ -1,0 +1,70 @@
+<!-- frontend/user/kursus.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<body
+  data-is-vip="{{ 'true' if user.is_vip else 'false' }}"
+  data-is-sma="{{ 'true' if user.is_sma_addon else 'false' }}"
+  data-is-umm="{{ 'true' if user.is_umm else 'false' }}"
+>
+
+<h2>Pilih Level Kursus</h2>
+
+<div id="level-list" style="display: flex; flex-direction: column; gap: 12px; max-width: 400px;">
+  <a href="/kursus/SDM" class="btn" data-level="SDM" data-needs-vip="false" data-needs-sma="false" data-needs-umm="false">SDM (Gratis)</a>
+  <a href="/kursus/SMM" class="btn" data-level="SMM" data-needs-vip="true" data-needs-sma="false" data-needs-umm="false">SMM (VIP)</a>
+  <a href="/kursus/SMA" class="btn" data-level="SMA" data-needs-vip="true" data-needs-sma="true" data-needs-umm="false">SMA (VIP + Addon SMA)</a>
+  <a href="/kursus/UMM" class="btn" data-level="UMM" data-needs-vip="true" data-needs-sma="true" data-needs-umm="true">UMM (VIP + SMA + Addon UMM)</a>
+</div>
+
+<style>
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #004aad;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const body = document.body;
+  const isVip = body.dataset.isVip === "true";
+  const isSma = body.dataset.isSma === "true";
+  const isUmm = body.dataset.isUmm === "true";
+
+  document.querySelectorAll("#level-list a.btn").forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      const needsVip = this.dataset.needsVip === "true";
+      const needsSma = this.dataset.needsSma === "true";
+      const needsUmm = this.dataset.needsUmm === "true";
+
+      if (needsVip && !isVip) {
+        event.preventDefault();
+        window.location.href = "/bayar/vip";
+        return;
+      }
+
+      if (needsSma && !isSma) {
+        event.preventDefault();
+        window.location.href = "/bayar/sma";
+        return;
+      }
+
+      if (needsUmm && !isUmm) {
+        event.preventDefault();
+        window.location.href = "/bayar/umm";
+        return;
+      }
+    });
+  });
+});
+</script>
+
+</body>
+{% endblock %}

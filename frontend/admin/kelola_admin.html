@@ -1,0 +1,101 @@
+{# frontend/admin/add_admin.html #}
+{% extends "admin/base_admin.html" %}
+{% block title %}Kelola Admin{% endblock %}
+
+{% block content %}
+{% if is_superadmin %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-2" style="color: #ffb514;">Tambah Admin Baru</h2>
+  <p class="mb-4" style="color: white; font-size: 14px;">
+    Halaman untuk menambahkan admin baru ke sistem.
+  </p>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" action="/admin/dashboard/kelola-admin" class="row g-3 mb-5">
+    <div class="col-md-4">
+      <label class="form-label text-white">Email</label>
+      <input type="email" name="email" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label text-white">Password</label>
+      <input type="password" name="password" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label text-white">Role</label>
+      <select name="role" class="form-select bg-dark text-white" required>
+        <option value="admin">admin</option>
+        <option value="superadmin">superadmin</option>
+      </select>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-warning">Tambah Admin</button>
+    </div>
+  </form>
+
+  <h3 class="mb-3" style="color: #ffb514;">Daftar Admin</h3>
+  <div class="table-responsive">
+    <table id="example" class="table table-dark table-bordered table-hover table-striped align-middle">
+      <thead class="table-light text-dark">
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Dibuat</th>
+          <th>Aksi</th> <!-- Kolom Aksi -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in admins %}
+        <tr>
+          <td>{{ a.email }}</td>
+          <td>{{ a.role }}</td>
+          <td>{{ 'Aktif' if a.is_active else 'Nonaktif' }}</td>
+          <td>{{ a.created_at }}</td>
+          <td>
+            <a href="/admin/dashboard/edit-admin/{{ a.id }}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="/admin/dashboard/permissions/{{ a.id }}" class="btn btn-sm btn-warning">Akses</a>
+            <form method="post" action="/admin/dashboard/delete-admin/{{ a.id }}" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus admin ini?')">
+              <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="container mt-4">
+  <div class="alert alert-danger">Akses ditolak. Hanya superadmin yang bisa menambah admin.</div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    new DataTable('#example', {
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ entri",
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ admin",
+        paginate: {
+          previous: "Sebelumnya",
+          next: "Berikutnya"
+        }
+      }
+    });
+  });
+</script>
+<style>
+  .dataTables_wrapper,
+  .dataTables_wrapper label,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+  }
+</style>
+{% endblock %}

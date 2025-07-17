@@ -1,0 +1,39 @@
+{# frontend/user/bayar_vip.html #}
+{% extends "base.html" %}
+
+{% block content %}
+<section class="container d-flex flex-column align-items-center justify-content-center text-center py-5" style="min-height: 100vh; background-color: #030018; color: white;">
+  <div class="p-4 rounded" style="max-width: 500px; width: 100%;">
+    <h2 class="fw-bold mb-3 text-warning">Upgrade ke VIP</h2>
+    <p class="mb-4 fs-5">Dapatkan akses penuh ke fitur eksklusif dan komunitas premium.</p>
+
+    <div class="bg-dark rounded p-4 shadow-sm border border-light-subtle">
+      <h4 class="fw-bold text-white mb-2">Biaya Membership</h4>
+      <p class="fs-4 text-warning mb-4">Rp {{ "{:,.0f}".format(gross_amount).replace(",", ".") }}</p>
+
+
+      <button onclick="pay()" class="btn btn-lg fw-bold text-dark" style="background-color: #FFB514; border-radius: 50px; padding: 12px 36px;">
+        Bayar Sekarang
+      </button>
+    </div>
+  </div>
+</section>
+
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+<script>
+  function pay() {
+    window.snap.pay("{{ snap_token }}", {
+      onSuccess: function(result) {
+        alert("Pembayaran berhasil!");
+        window.location.href = "/dashboard";
+      },
+      onPending: function(result) {
+        alert("Menunggu pembayaran...");
+      },
+      onError: function(result) {
+        alert("Pembayaran gagal!");
+      }
+    });
+  }
+</script>
+{% endblock %}

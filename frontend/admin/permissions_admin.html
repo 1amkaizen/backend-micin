@@ -1,0 +1,39 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Kelola Akses Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 style="color: #ffb514;">Kelola Akses: {{ admin.email }}</h2>
+  <form method="post">
+    <div class="form-check form-switch mt-3">
+      <input class="form-check-input" type="checkbox" id="can_edit_user" name="can_edit_user" {% if permissions.can_edit_user %}checked{% endif %}>
+      <label class="form-check-label text-white" for="can_edit_user">Kelola User</label>
+    </div>
+
+    <div class="form-check form-switch mt-2">
+      <input class="form-check-input" type="checkbox" id="can_manage_module" name="can_manage_module" {% if permissions.can_manage_module %}checked{% endif %}>
+      <label class="form-check-label text-white" for="can_manage_module">Kelola Modul</label>
+    </div>
+
+    <div class="form-check form-switch mt-2 ">
+      <input class="form-check-input" type="checkbox" id="can_manage_exam" name="can_manage_exam" {% if permissions.can_manage_exam %}checked{% endif %}>
+      <label class="form-check-label text-white" for="can_manage_exam">Kelola Ujian</label>
+    </div>
+    <!-- Kelola Transaksi -->
+    <div class="form-check form-switch mt-2">
+      <input class="form-check-input" type="checkbox" id="can_manage_transaksi" name="can_manage_transaksi" {% if permissions.can_manage_transaksi %}checked{% endif %}>
+      <label class="form-check-label text-white" for="can_manage_transaksi">Kelola Transaksi</label>
+    </div>
+    
+    <div class="form-check form-switch mt-2 mb-4">
+      <input class="form-check-input" type="checkbox" id="can_manage_prices" name="can_manage_prices" {% if permissions.can_manage_prices %}checked{% endif %}>
+      <label class="form-check-label text-white" for="can_manage_prices">Kelola Harga</label>
+    </div>
+
+    
+
+    <button type="submit" class="btn btn-warning">Simpan Akses</button>
+    <a href="/admin/dashboard/kelola-admin" class="btn btn-secondary">Kembali</a>
+  </form>
+</div>
+{% endblock %}

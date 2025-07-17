@@ -1,0 +1,27 @@
+<!-- frontend/admin/partials/dashboard.html -->
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <!-- Teks Selamat Datang -->
+  <section class="content-header mb-4">
+    <h1>Halo, {{ admin_email }}!</h1>
+    <small class="d-block text-white" style="
+      font-family: 'Lexend', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;">
+      Ini adalah halaman dashboard admin.
+    </small>    
+  </section>
+
+  {% include 'admin/partials/hero.html' %}
+  {% include 'admin/partials/profile.html' %}
+  {% include 'admin/partials/stats_komu.html' %}
+  {% include 'admin/partials/stats_anggota.html' %}
+
+  
+  
+{% endblock %}
+

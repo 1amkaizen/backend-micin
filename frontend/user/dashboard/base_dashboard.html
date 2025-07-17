@@ -1,0 +1,99 @@
+{# frontend/user/dashboard/base_dashboard.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Dashboard Micin.ID{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/static/css/dashboard.css">
+  <link rel="stylesheet" href="/static/css/module.css">
+  <link rel="stylesheet" href="/static/css/ujian.css">
+  <link rel="stylesheet" href="/static/css/vip.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Midtrans Snap.js -->
+  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <div class="d-flex flex-column flex-lg-row min-vh-100">
+    <!-- Tombol hamburger -->
+    <button class="btn d-lg-none ms-auto m-2 text-white" type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#sidebar"
+    aria-controls="sidebar"
+    aria-expanded="false"
+    aria-label="Toggle sidebar">
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" 
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+   stroke-linejoin="round" class="bi bi-list">
+<path d="M3 7h18M3 14h18M3 21h18"/>
+</svg>
+</button>
+
+
+    {% include 'user/dashboard/sidebar.html' %}
+
+    <main class="flex-grow-1 overflow-auto" style="background-color: #030018;">
+      {% block main %}
+      <div id="main-content" class="px-3 px-lg-4 pt-3 pt-lg-4">
+        {% block content %}{% endblock %}
+      </div>
+      {% endblock %}
+    </main>
+  </div>
+
+  <!-- Bootstrap Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  {% block extra_script %}
+  <script>
+   function loadSection(section, level = null, part = null) {
+  const container = document.querySelector("#main-content");
+  let url = `/dashboard/partial/${section}`;
+  const params = new URLSearchParams();
+  if (level) params.append("level", level);
+  if (part) params.append("part", part);
+  if (params.toString()) url += "?" + params.toString();
+
+  fetch(url, { credentials: "include" })  // ⬅️ ini penting biar cookie login ikut
+    .then(res => {
+      if (!res.ok) throw new Error("Gagal memuat konten");
+      return res.text();
+    })
+    .then(html => {
+      container.innerHTML = html;
+      window.scrollTo(0, 0);
+
+      if (section === "sol") {
+        initSolanaForm();
+      }
+    })
+    .catch(err => {
+      container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+    });
+}
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('[data-section]').forEach(link => {
+        link.addEventListener("click", e => {
+          e.preventDefault();
+          const section = link.getAttribute("data-section");
+          loadSection(section);
+        });
+      });
+    });
+  </script>
+  {% endblock %}
+
+  <!-- Solana handler -->
+  <script src="/static/js/solana.js"></script>
+
+</body>
+</html>

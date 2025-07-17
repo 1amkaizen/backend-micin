@@ -1,0 +1,57 @@
+{% extends "user/dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container py-5" style="color: white; background-color: #030018; min-height: 100vh;">
+  <div class="card mx-auto p-4 shadow-lg" style="max-width: 600px; background-color: #111122; border-radius: 16px; color: white;">
+    <h2 class="mb-3" style="color: #FFB514;">💡 Pembelian Addon UMM</h2>
+
+    {% if pesan %}
+      <div class="alert alert-warning text-center" role="alert">
+        ⚠️ {{ pesan }}
+        <div class="mt-4 d-flex justify-content-center">
+          <a href="/bayar/sma"
+            class="btn fw-bold"
+            style="background-color: #FFB514; color: #030018; border-radius: 12px; padding: 8px 24px;">
+            🔁 Beli Addon SMA Sekarang
+          </a>
+        </div>
+      </div>
+    {% else %}
+      <p class="mb-2 text-white">
+        Untuk membuka akses materi <strong class="text-white">UMM</strong>, kamu perlu membeli Addon ini.
+      </p>
+      <p class="mb-2 text-white">
+        <strong class="text-white">Syarat:</strong> Kamu harus sudah membeli Addon SMA sebelumnya.
+      </p>
+      <p class="mb-4 text-white">
+        Harga: <span class="fw-bold text-white">Rp {{ "{:,.0f}".format(gross_amount).replace(",", ".") }}</span>
+      </p>
+
+      <button onclick="bayarUMM()" class="btn w-100 py-2 fw-bold"
+        style="background-color: #FFB514; color: #030018; border-radius: 10px;">
+        💳 Bayar Sekarang
+      </button>
+    {% endif %}
+  </div>
+</div>
+
+{% if not pesan %}
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+<script>
+  function bayarUMM() {
+    window.snap.pay("{{ snap_token }}", {
+      onSuccess: function(result) {
+        alert("Pembayaran berhasil!");
+        window.location.href = "/dashboard";
+      },
+      onPending: function(result) {
+        alert("Menunggu pembayaran...");
+      },
+      onError: function(result) {
+        alert("Pembayaran gagal!");
+      }
+    });
+  }
+</script>
+{% endif %}
+{% endblock %}

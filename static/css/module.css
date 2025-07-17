@@ -1,0 +1,64 @@
+    /* Modules grid */
+    .modules {
+      margin-top: 2rem;
+    }
+    .module-card {
+      background-color: #1b1b32;
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(40,40,80,0.5);
+      transition: transform 0.3s ease;
+    }
+    .module-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(247, 182, 0, 0.7);
+    }
+    .module-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+    .module-body {
+      padding: 1rem 1.25rem 1.5rem 1.25rem;
+    }
+    .module-label {
+      font-size: 0.85rem;
+      color: #f7b600;
+      font-weight: 500;
+      margin-bottom: 0.2rem;
+      user-select: none;
+    }
+    .module-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.45rem;
+      user-select: text;
+    }
+    .module-desc {
+      font-size: 0.875rem;
+      color: #ccc;
+      margin-bottom: 1rem;
+      user-select: text;
+    }
+    .btn-module {
+      background-color: #f7b600;
+      color: #0c0d1a;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 0.4rem 1.25rem;
+      border: none;
+      box-shadow: 0 3px 10px rgba(247, 182, 0, 0.5);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .btn-module:hover, .btn-module:focus {
+      background-color: #fab900;
+      color: #0a0b16;
+      text-decoration: none;
+      box-shadow: 0 5px 18px rgba(247, 182, 0, 0.8);
+      outline: none;
+    }

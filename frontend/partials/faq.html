@@ -1,0 +1,142 @@
+<style>
+  /* --- FAQ Section Styling --- */
+  .faq-wrapper {
+    background-color: #000;
+    border: 1px solid #FFB514;
+    border-radius: 50px;
+    box-shadow: 0px 4px 10px #FFB514;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1rem 5rem 1rem;
+    min-height: 520px;
+    position: relative;
+    color: white;
+  }
+
+  .faq-heading-desktop {
+  position: absolute;
+  top: -28px;
+  left: 0;
+  width: 100%;
+  padding: 25px 32px;
+  background-color: #FFB514;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  z-index: 2;
+}
+
+
+  .faq-heading-desktop h4,
+  .faq-heading-mobile h4 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #030018;
+    margin-bottom: 0;
+  }
+
+  .faq-heading-mobile h4 {
+    background-color: #FFB514;
+    padding: 12px 20px;
+    font-size: 20px;
+    line-height: 32px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+
+  .faq-list .faq-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .faq-list .faq-item p,
+  .faq-list .faq-item ul {
+    font-size: 14px;
+  }
+
+  .faq-list .faq-item ul {
+    padding-left: 1rem;
+    margin-bottom: 0;
+  }
+
+  .faq-list .faq-icon {
+    color: #FFB514;
+    font-size: 1.2rem;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .faq-heading-desktop {
+      display: none;
+    }
+
+    .faq-heading-mobile {
+      display: block;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .faq-heading-mobile {
+      display: none;
+    }
+  }
+</style>
+
+<!-- WRAPPER -->
+<section class="faq-wrapper">
+
+  <!-- HEADING DESKTOP -->
+  <div class="faq-heading-desktop d-none d-md-block">
+    <h4 class="ps-4 ps-lg-0 text-center text-lg-start fs-5">
+      ❓ FAQ – Pertanyaan yang Sering Ditanyakan
+    </h4>
+  </div>
+
+  <!-- HEADING MOBILE -->
+  <div class="faq-heading-mobile d-block d-md-none text-center">
+    <h4>❓ FAQ – Pertanyaan yang Sering Ditanyakan</h4>
+  </div>
+
+  <!-- ISI -->
+  <div class="container" style="max-width: 1280px;">
+    <div class="row">
+
+      <!-- KIRI (FAQ List) -->
+      <div class="col-lg-12 d-flex flex-column justify-content-center align-items-start mt-4 ps-4 ps-md-5 faq-list">
+        {% for q in [
+         ('💵 Berapa biaya gabung VIP?', 'Harga promo hanya Rp350.000 untuk 100 orang pertama.​Harga normal adalah Rp750.000 (akses seumur hidup).'),
+         ('🧑‍🎓 Apakah pemula bisa gabung?​', 'Sangat bisa! Semua materi sudah disusun dari nol dan ada tim yang siap bantu.'),
+         ('⏳ Berapa lama balik modal di Micin.id?', '85% member balik modal dalam 2–3 hari. Bahkan banyak yang cuma butuh beberapa jam!'),
+         ('📈 Apakah sinyal VIP dijamin profit?', 'Kami tidak bisa menjamin profit mutlak karena pasar crypto sangat fluktuatif. Tapi dengan panduan mentor, strategi yang disiplin, dan manajemen risiko yang benar,banyak member kami bisa cuan secara konsisten.'),
+         ('🎓 Apakah ini legal? Apakah ada unsur investasi bodong?', 'Micin.id adalah platform edukasi dan komunitas, bukan investasi atau pengelolaan dana. Kami hanya menyediakan edukasi, sinyal, dan support komunitas. Kamu tetap yang pegang kendali penuh atas asetmu.'),
+         ('🛑 Apakah saya bisa refund setelah beli akses VIP?', 'Karena produk ini bersifat digital dan lifetime access, maka tidak ada pengembalian dana (no refund) setelah transaksi berhasil.'),
+         ('🧑‍🤝‍🧑 Apakah komunitasnya aktif?', 'Sangat aktif! Setiap hari ada update, sinyal, diskusi, dan trabar bareng mentor maupun sesama member.'),
+         ('📚 Apakah saya bisa akses semua modul Sekolah Micin?', 'LIST_MODE'),
+         ('📘 Apakah SMA & UMM wajib?​', 'Tidak. Tapi sangat disarankan untuk kamu yang ingin naik level jadi trader profesional atau membangun ekosistem komunitas micin sendiri.'),
+         ('📱 Apa yang saya butuhkan untuk mulai?​', 'Hanya perlu Telegram, dompet crypto (Phantom/Solflare), dan semangat belajar. Semua step-by-step akan dipandu.')
+        ] %}
+        <div class="faq-item">
+          <i class="bi bi-check-circle faq-icon"></i>
+          <div>
+            <p class="fw-semibold mb-1" style="color: #FFB514;">{{ q[0] }}</p>
+
+            {% if q[0] == '📚 Apakah saya bisa akses semua modul Sekolah Micin?' %}
+              <ul>
+                <li>Member VIP mendapatkan akses penuh ke SDM dan SMM.</li>
+                <li>Untuk modul SMA dan UMM, tersedia sebagai addon berbayar dan bisa diakses setelah menyelesaikan ujian SMM.</li>
+                <li>Untuk kelas SMA & UMM, bisa dibeli terpisah jika sudah lulus SMM dan ingin lanjut jadi pro trader atau bangun komunitas sendiri.</li>
+              </ul>
+            {% else %}
+              <p class="mb-0 text-white">{{ q[1] }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</section>

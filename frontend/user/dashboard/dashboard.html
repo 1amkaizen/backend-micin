@@ -1,0 +1,78 @@
+<!-- frontend/user/dashboard/dashboard.html -->
+{% extends "user/dashboard/base_dashboard.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <!-- Teks Selamat Datang -->
+  <section class="content-header mb-4">
+    <h1>Halo, {{ username }}!</h1>
+    <small class="d-block text-white" style="
+      font-family: 'Lexend', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;">
+      Selamat datang kembali di Micin.ID
+    </small>    
+  </section>
+
+  {% include 'user/dashboard/partials/hero.html' %}
+  {% include 'user/dashboard/partials/profile.html' %}
+  {% include 'user/dashboard/partials/progress.html' %}
+  {% include 'user/dashboard/partials/stats_komu.html' %}
+  {% include 'user/dashboard/partials/komunitas.html' %}
+  {% include 'user/dashboard/partials/stats_anggota.html' %}
+  {% include 'user/dashboard/partials/aktifitas.html' %}
+  {% include 'user/dashboard/partials/support.html' %}
+
+  <script>
+    async function loadProgressSummary() {
+      try {
+        const res = await fetch("/progress/summary");
+        const data = await res.json();
+  
+        const level = data.modul_terakhir?.level || "SDM";
+        const persen = data.progress?.[level] || 0;
+  
+        const labelEl = document.getElementById("progress-label");
+        if (labelEl) labelEl.innerText = level + " (Sekolah Dasar Micin)";
+  
+        const barEl = document.getElementById("progress-bar");
+        if (barEl) {
+          barEl.style.width = persen + "%";
+          barEl.setAttribute("aria-valuenow", persen);
+        }
+  
+        const valEl = document.getElementById("progress-value");
+        if (valEl) valEl.innerText = persen + "%";
+  
+        const skor = data.ujian?.[level]?.score;
+        const scoreEl = document.getElementById("test-score");
+        if (scoreEl) scoreEl.innerText = skor !== undefined ? skor + "/100" : "-";
+  
+        const sertifikat = data.ujian?.[level]?.sertifikat_url;
+        if (sertifikat) {
+          const linkWrap = document.getElementById("sertifikat-link");
+          const linkEl = document.getElementById("sertifikat-url");
+          if (linkWrap) linkWrap.style.display = "flex";
+          if (linkEl) linkEl.href = sertifikat;
+        }
+  
+        const mod = data.modul_terakhir;
+        const lanjutEl = document.getElementById("lanjutkan-link");
+        if (mod?.level && mod?.module_id && lanjutEl) {
+          lanjutEl.href = `/${mod.level.toLowerCase()}/modul/${mod.module_id}`;
+
+        }
+  
+      } catch (err) {
+        console.error("Gagal ambil progress summary:", err);
+      }
+    }
+  
+    loadProgressSummary(); // langsung panggil
+  </script>
+  
+  
+{% endblock %}
+

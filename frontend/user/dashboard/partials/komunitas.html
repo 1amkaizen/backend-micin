@@ -1,0 +1,28 @@
+<div class="card p-4 mb-4" style="background-color: #1e1e2f; border-radius: 12px; border: 1px solid #DEE0E3;">
+  {% if is_vip %}
+    <h5 class="text-white mb-3" style="font-family: 'Poppins', sans-serif;">Akses Komunitas Telegram</h5>
+    <p class="text-white mb-4">Gabung ke komunitas eksklusif khusus member VIP:</p>
+
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+      <a href="https://t.me/micin_group" target="_blank"
+         class="btn btn-outline-warning fw-semibold d-flex align-items-center justify-content-center gap-2 px-4 py-2 w-100 w-md-auto"
+         style="border-radius: 8px;">
+        <i class="bi bi-people-fill fs-5"></i> Grup Diskusi
+      </a>
+      <a href="https://t.me/micin_channel" target="_blank"
+         class="btn btn-outline-warning fw-semibold d-flex align-items-center justify-content-center gap-2 px-4 py-2 w-100 w-md-auto"
+         style="border-radius: 8px;">
+        <i class="bi bi-megaphone-fill fs-5"></i> Channel Info
+      </a>
+    </div>
+  {% else %}
+    <h5 class="text-white mb-3" style="font-family: 'Poppins', sans-serif;">Akses Komunitas Terkunci</h5>
+    <p class="text-white mb-3">Grup & channel Telegram hanya tersedia untuk member VIP.</p>
+    <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+      <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
+        <i class="bi bi-lock-fill text-white fs-4"></i>
+      </div>
+      <a href="/join-vip" class="btn btn-warning fw-semibold px-4 py-2" style="border-radius: 8px;">Upgrade ke VIP</a>
+    </div>
+  {% endif %}
+</div>

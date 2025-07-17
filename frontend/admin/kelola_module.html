@@ -1,0 +1,138 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-3" style="color: #ffb514;">Manajemen Modul Kursus</h2>
+
+  <!-- Form Tambah Modul -->
+  <div class="mb-5">
+    <h4 class="mb-3 text-white">Tambah Modul Baru</h4>
+    <form method="post" action="/admin/modules/add" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label text-white">Level</label>
+        <select name="level" class="form-select bg-dark text-white" required>
+          <option value="SDM">SDM</option>
+          <option value="SMM">SMM</option>
+          <option value="SMA">SMA</option>
+          <option value="UMM">UMM</option>
+        </select>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label text-white">Judul Modul</label>
+        <input type="text" name="title" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-white">Video URL</label>
+        <input type="url" name="video_url" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-warning">Tambah Modul</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Daftar Modul -->
+  <div class="mb-5">
+    <h4 class="mb-3 text-white">Daftar Modul Tersedia</h4>
+    <div class="table-responsive">
+      <table id="example" class="table table-dark table-bordered table-hover table-striped align-middle">
+        <thead class="table-light text-dark">
+          <tr>
+            <th>Level</th>
+            <th>Judul</th>
+            <th>Video</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in modules %}
+          <tr>
+            <td>{{ m.level }}</td>
+            <td>{{ m.title }}</td>
+            <td><a href="{{ m.video_url }}" class="btn btn-link btn-sm" target="_blank">Lihat</a></td>
+            <td>
+              <form action="/admin/modules/delete" method="post" class="d-inline">
+                <input type="hidden" name="id" value="{{ m.id }}">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus modul ini?')">Hapus</button>
+              </form>
+              <button type="button" class="btn btn-secondary btn-sm"
+                onclick="showEditForm('{{ m.id }}', '{{ m.level }}', `{{ m.title }}`, `{{ m.video_url }}`)">
+                Edit
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Form Edit Modul -->
+  <div id="modul-edit-section" style="display: none;" class="mb-5">
+    <h4 class="mb-3 text-white">Edit Modul</h4>
+    <form method="post" action="/admin/modules/edit" class="row g-3">
+      <input type="hidden" name="id" id="edit-id">
+      <div class="col-md-3">
+        <label class="form-label text-white">Level</label>
+        <select name="level" id="edit-level" class="form-select bg-dark text-white" required>
+          <option value="SDM">SDM</option>
+          <option value="SMM">SMM</option>
+          <option value="SMA">SMA</option>
+          <option value="UMM">UMM</option>
+        </select>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label text-white">Judul Modul</label>
+        <input type="text" name="title" id="edit-title" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label text-white">Video URL</label>
+        <input type="url" name="video_url" id="edit-video_url" class="form-control bg-dark text-white" required>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
+        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  function showEditForm(id, level, title, video_url) {
+    document.getElementById("edit-id").value = id;
+    document.getElementById("edit-level").value = level;
+    document.getElementById("edit-title").value = title;
+    document.getElementById("edit-video_url").value = video_url;
+    document.getElementById("modul-edit-section").style.display = "block";
+    window.scrollTo({ top: document.getElementById("modul-edit-section").offsetTop - 100, behavior: 'smooth' });
+  }
+
+  function cancelEdit() {
+    document.getElementById("modul-edit-section").style.display = "none";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    new DataTable('#example', {
+      language: {
+        search: "Cari:",
+        lengthMenu: "Tampilkan _MENU_ entri",
+        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ modul",
+        paginate: {
+          previous: "Sebelumnya",
+          next: "Berikutnya"
+        }
+      }
+    });
+  });
+</script>
+<style>
+  .dataTables_wrapper,
+  .dataTables_wrapper label,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+  }
+</style>
+{% endblock %}

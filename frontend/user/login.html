@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 text-center px-3">
+  <!-- Hilangkan padding-top agar benar-benar center -->
+
+  <!-- Logo -->
+  <img src="/static/img/login.png" alt="Micin.id Logo" width="120" class="mb-4">
+
+  <!-- Welcome Message -->
+  <div class="d-flex flex-column align-items-center px-3 pt-2 pb-3 mx-auto text-center"
+       style="max-width: 960px;">
+    <h1 class="fw-bold text-white m-0 fs-4 fs-md-3" style="font-family: 'Poppins', sans-serif;">
+      Welcome to Micin.id
+    </h1>
+  </div>
+
+  <!-- Deskripsi -->
+  <p class="text-white fw-normal text-center mb-4 mx-auto px-2" style="
+    max-width: 928px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    line-height: 24px;">
+    Micin.ID adalah platform edukasi untuk trader meme coin.<br>
+    Login via Telegram untuk mulai belajar.
+  </p>
+
+  <!-- Telegram Widget Langsung -->
+  <div class="d-flex justify-content-center mb-4 px-2" style="max-width: 960px;">
+    <script async src="https://telegram.org/js/telegram-widget.js?7"
+            data-telegram-login="{{ telegram_login_username }}"
+            data-size="large"
+            data-userpic="false"
+            data-request-access="write"
+            data-auth-url="{{ BASE_URL }}/login"
+            data-radius="24"></script>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="text-center px-3 mx-auto mt-2" style="max-width: 928px;">
+    <p class="mb-0" style="
+      font-family: 'Poppins', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;
+      color: #AB9EB8;">
+      Kami tidak menyimpan chat, nomor HP, atau data pribadi kamu dari Telegram.<br>
+      Proses login ini aman dan langsung diverifikasi oleh sistem resmi Telegram.<br>
+      Micin.id hanya menggunakan data login untuk memverifikasi status keanggotaan kamu dan memberikan akses materi.
+    </p>
+  </div>
+</div>
+
+{% include "partials/login_popup.html" %}
+{% endblock %}

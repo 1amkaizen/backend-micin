@@ -1,0 +1,30 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Edit Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 style="color: #ffb514;">Edit Admin</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label text-white">Email</label>
+      <input type="email" name="email" value="{{ admin.email }}" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label text-white">Role</label>
+      <select name="role" class="form-select bg-dark text-white">
+        <option value="admin" {% if admin.role == 'admin' %}selected{% endif %}>admin</option>
+        <option value="superadmin" {% if admin.role == 'superadmin' %}selected{% endif %}>superadmin</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label text-white">Status Aktif</label>
+      <select name="is_active" class="form-select bg-dark text-white">
+        <option value="true" {% if admin.is_active %}selected{% endif %}>Aktif</option>
+        <option value="false" {% if not admin.is_active %}selected{% endif %}>Nonaktif</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-warning">Simpan</button>
+    <a href="/admin/dashboard/kelola-admin" class="btn btn-secondary">Kembali</a>
+  </form>
+</div>
+{% endblock %}

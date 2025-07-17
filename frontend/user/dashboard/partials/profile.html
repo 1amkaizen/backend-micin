@@ -1,0 +1,47 @@
+<section class="profile-box d-flex align-items-center gap-3 mb-4">
+  {% if user_photo %}
+    <img src="https://images.weserv.nl/?url={{ user_photo | replace('https://', '') }}"
+         class="rounded-circle"
+         width="64" height="64"
+         style="object-fit: cover;" />
+  {% else %}
+    <i class="bi bi-person-circle text-white fs-1"></i>
+  {% endif %}
+
+  <div class="text-white">
+    <div class="name fw-semibold fs-5">{{ full_name or username }}</div>
+
+    {% if is_vip %}
+      <div class="vip d-flex align-items-center" style="color: #FFB514;">
+        <i class="bi bi-star-fill me-1"></i> VIP Member
+      </div>
+    {% else %}
+      <div class="vip text-danger">
+        Non VIP Member
+      </div>
+    {% endif %}
+    
+    {# Badge level dengan warna dan icon berbeda per level #}
+{% if user_badge_level %}
+  {% set badge_colors = {
+    "SDM": "bg-primary text-white",
+    "SMM": "bg-success text-white",
+    "SMA": "bg-warning text-dark",
+    "UMM": "bg-danger text-white"
+  } %}
+  {% set badge_icons = {
+    "SDM": "bi-book",
+    "SMM": "bi-award",
+    "SMA": "bi-mortarboard",
+    "UMM": "bi-trophy"
+  } %}
+
+  <span class="badge {{ badge_colors.get(user_badge_level, 'bg-secondary text-white') }} d-flex align-items-center gap-1 mt-1" style="font-weight: 600;">
+    <i class="bi {{ badge_icons.get(user_badge_level, 'bi-patch-question') }}"></i>
+    {{ user_badge_level | upper }}
+  </span>
+{% endif %}
+
+    
+  </div>
+</section>

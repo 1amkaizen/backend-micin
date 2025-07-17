@@ -1,0 +1,64 @@
+<!-- File: frontend/user/dashboard/partials/akun.html -->
+<section class="container py-4">
+  <h2 class="fw-bold mb-4" style="color: #FFB514;">Profil Saya</h2>
+
+  <div class="profile-box d-flex align-items-center gap-3 mb-4">
+    {% if user_photo %}
+      <img src="https://images.weserv.nl/?url={{ user_photo | replace('https://', '') }}"
+           class="rounded-circle border border-2 border-light"
+           width="64" height="64"
+           style="object-fit: cover;" />
+    {% else %}
+      <i class="bi bi-person-circle text-white fs-1"></i>
+    {% endif %}
+
+    <div>
+      <div class="fw-bold fs-5" style="color: #FFB514;">{{ full_name or username }}</div>
+      <div class="text-light mb-1">@{{ username }}</div>
+
+      {% if is_vip %}
+        <div class="d-flex align-items-center mb-1" style="color: #FFB514;">
+          <i class="bi bi-star-fill me-1"></i> <strong>VIP Member</strong>
+        </div>
+        <div class="text-light small">
+          Aktif sejak: {{ vip_since.strftime('%d %B %Y') if vip_since }}
+        </div>
+      {% else %}
+        <div class="text-danger fw-semibold">Non VIP Member</div>
+      {% endif %}
+
+      <div class="text-light small mt-1">
+        Bergabung: {{ created_at.strftime('%d %B %Y') if created_at }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Tombol Edit -->
+  <button class="btn btn-outline-warning mb-3" data-bs-toggle="collapse" data-bs-target="#editForm">
+    <i class="bi bi-pencil-square me-1"></i> Edit Profil
+  </button>
+
+  <!-- Form edit profil -->
+  <div class="collapse" id="editForm">
+    <form method="post" action="/profile/update" class="p-4 rounded shadow-sm" style="background-color: #1c1c2e;">
+      <div class="mb-3">
+        <label for="username" class="form-label text-white">Username</label>
+        <input type="text" class="form-control" id="username" name="username"
+               value="{{ username }}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="full_name" class="form-label text-white">Nama Lengkap</label>
+        <input type="text" class="form-control" id="full_name" name="full_name"
+               value="{{ full_name }}">
+      </div>
+
+
+
+
+      <button type="submit" class="btn btn-warning fw-bold">
+        <i class="bi bi-save me-1"></i> Simpan Perubahan
+      </button>
+    </form>
+  </div>
+</section>

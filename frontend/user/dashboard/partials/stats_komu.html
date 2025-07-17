@@ -1,0 +1,131 @@
+<section>
+  <h6 class="mb-3 fw-bold"
+  style="
+    width: 912px;
+    height: 23px;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 23px;
+    color: #FFFFFF;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  "
+>
+Statistik Komunitas
+</h6>
+
+  <div class="d-flex flex-wrap gap-3 mb-4">
+
+<div class="stats-card flex-fill d-flex flex-column justify-content-start"
+     style="
+       background-color: #3F2C52;
+       border: 2px solid #FFFFFF;
+       border-radius: 12px;
+       padding: 12px 24px;
+
+     ">
+
+  <img src="/static/img/user_icon.png" alt="User Icon"
+       width="34" height="34"
+       style="object-fit: contain;" />
+
+       <div class="text-white fw-medium mt-3" style="font-size: 16px; line-height: 24px; font-family: 'Poppins', sans-serif; width: 164px; height: 24px;">
+        Total User
+      </div>
+      
+      <div class="d-flex gap-1 align-items-start">
+        <div class="value text-white fw-semibold" style="font-size: 20px;">{{ total_users }}</div>
+        <div class="growth text-success fw-semibold" style="font-size: 16px;">{{ growth_user }}</div>
+      </div>
+      
+  
+</div>
+
+<div class="stats-card flex-fill d-flex flex-column justify-content-start"
+     style="
+       background-color: #385672;
+       border: 2px solid #FFFFFF;
+       border-radius: 12px;
+       padding: 13px 24px;
+
+     ">
+  
+  <img src="/static/img/award.png" alt="User Icon"
+       width="34" height="34"
+       style="object-fit: contain;" />
+
+<!-- Label -->
+<div class="text-white fw-medium mt-3" style="font-size: 16px; line-height: 24px; font-family: 'Poppins', sans-serif; width: 164px; height: 24px;">
+  Free User
+</div>
+
+<!-- Value dan Growth -->
+<div class="d-flex gap-1 align-items-start">
+  <div class="value text-white fw-semibold" style="font-size: 20px;">{{ free_users }}</div>
+  <div class="growth text-success fw-semibold" style="font-size: 16px;">{{ growth_free }}</div>
+</div>
+
+
+</div>
+
+
+<div class="stats-card flex-fill d-flex flex-column justify-content-start"
+     style="
+       background-color: #735E2F;
+       border: 2px solid #FFFFFF;
+       border-radius: 12px;
+       padding: 12px 24px;
+
+     ">
+  
+  <img src="/static/img/vector.png" alt="User Icon"
+       width="34" height="34"
+       style="object-fit: contain;" />
+
+<!-- Label -->
+<div class="text-white fw-medium mt-3" style="font-size: 16px; line-height: 24px; font-family: 'Poppins', sans-serif; width: 164px; height: 24px;">
+  VIP User
+</div>
+
+<!-- Value dan Growth -->
+<div class="d-flex gap-1 align-items-start">
+  <div class="value text-white fw-semibold" style="font-size: 20px;">{{ vip_users }}</div>
+  <div class="growth text-success fw-semibold" style="font-size: 16px;">{{ growth_vip }}</div>
+</div>
+
+</div>
+
+
+<div class="stats-card flex-fill d-flex flex-column justify-content-start"
+     style="
+       background-color: #63302D;
+       border: 2px solid #FFFFFF;
+       border-radius: 12px;
+       padding: 12px 24px;
+
+     ">
+
+  <img src="/static/img/book.png" alt="User Icon"
+       width="34" height="34"
+       style="object-fit: contain;" />
+
+<!-- Label -->
+<div class="text-white fw-medium mt-3 mb-3" style="font-size: 16px; line-height: 24px; font-family: 'Poppins', sans-serif; width: 164px; height: 24px;">
+  Modul Aktif
+</div>
+
+<!-- Value dan Growth -->
+<div class="d-flex gap-1 align-items-start">
+  <div class="value text-white fw-semibold" style="font-size: 20px;">{{ modul_aktif }}</div>
+  <div class="growth text-success fw-semibold" style="font-size: 16px;">{{ growth_modul }}</div>
+</div>
+
+</div>
+
+
+  </div>
+</section>
