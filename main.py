@@ -1,7 +1,7 @@
 # main.py
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -9,13 +9,6 @@ from starlette.middleware.sessions import SessionMiddleware
 from backend.routes import admin_user
 from backend.routes import admin_module
 from backend.routes import admin_exam  
-
-
-
-
-
-
-
 
 # Import dari config
 from config import TELEGRAM_LOGIN_BOT_USERNAME, BASE_URL, supabase, SECRET_KEY
@@ -62,6 +55,12 @@ async def custom_404_handler(request: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
         return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
     raise exc
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
 
 # Auth Telegram
 app.include_router(telegram_login.router) 

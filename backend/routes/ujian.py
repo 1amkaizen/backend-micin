@@ -42,8 +42,31 @@ async def tampil_ujian(level: str, request: Request, telegram_id: str = Depends(
     })
 
 
+
 @router.post("/ujian/{level}", response_class=HTMLResponse)
 async def proses_ujian(level: str, request: Request, telegram_id: str = Depends(require_login)):
+    # 🔒 Validasi apakah semua modul sudah selesai
+    modul_res = supabase.table("Modules").select("id").eq("level", level).execute()
+    modul_ids = [m["id"] for m in modul_res.data or []]
+
+    progress_res = supabase.table("ModuleProgress").select("module_id, is_completed") \
+        .eq("user_id", int(telegram_id)).in_("module_id", modul_ids).execute()
+    progress_map = {p["module_id"]: p["is_completed"] for p in (progress_res.data or [])}
+    semua_selesai = all(progress_map.get(mid, False) for mid in modul_ids)
+
+    if not semua_selesai:
+        return templates.TemplateResponse("/user/dashboard/partials/hasil_ujian.html", {
+            "request": request,
+            "level": level,
+            "nilai": 0,
+            "lulus": False,
+            "total": 0,
+            "benar": 0,
+            "attempt": 0,
+            "pesan_error": "⚠️ Kamu belum menyelesaikan semua modul. Harap selesaikan terlebih dahulu sebelum mengikuti ujian."
+        })
+
+    # 🔽 Lanjut proses ujian seperti biasa
     user_res = supabase.table("Users").select("full_name, last_reset").eq("user_id", int(telegram_id)).single().execute()
     last_reset = user_res.data.get("last_reset") if user_res.data else None
     nama_user = user_res.data.get("full_name") or f"User {telegram_id}"
@@ -85,19 +108,14 @@ async def proses_ujian(level: str, request: Request, telegram_id: str = Depends(
 
     # Logging & Reset jika gagal 3x
     if not lulus and jumlah_gagal + 1 >= 3:
-        # Reset progress
-        modul_res = supabase.table("Modules").select("id").eq("level", level).execute()
-        modul_ids = [m["id"] for m in modul_res.data or []]
         for mid in modul_ids:
             supabase.table("ModuleProgress").update({"is_completed": False}) \
                 .eq("user_id", int(telegram_id)).eq("module_id", mid).execute()
 
-        # Simpan waktu reset
         supabase.table("Users").update({
             "last_reset": datetime.utcnow().isoformat()
         }).eq("user_id", int(telegram_id)).execute()
 
-        # ✅ Log aktivitas gagal 3x
         log_activity(
             user_id=int(telegram_id),
             title=f"Ujian {level}",
@@ -116,7 +134,6 @@ async def proses_ujian(level: str, request: Request, telegram_id: str = Depends(
             "pesan_error": "❌ Kamu sudah gagal 3x. Progress di-reset. Silakan ulang modul dari awal."
         })
 
-    # ✅ Log aktivitas gagal biasa
     if not lulus:
         log_activity(
             user_id=int(telegram_id),
@@ -125,7 +142,6 @@ async def proses_ujian(level: str, request: Request, telegram_id: str = Depends(
             icon="x"
         )
 
-    # ✅ Log aktivitas lulus
     if lulus:
         log_activity(
             user_id=int(telegram_id),
@@ -134,7 +150,6 @@ async def proses_ujian(level: str, request: Request, telegram_id: str = Depends(
             icon="check"
         )
 
-    # Generate sertifikat jika lulus
     filename = None
     if lulus:
         filename = f"sertifikat_{telegram_id}_{level}.pdf"

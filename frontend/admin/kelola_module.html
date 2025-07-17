@@ -4,32 +4,37 @@
 <div class="container-fluid mt-4">
   <h2 class="mb-3" style="color: #ffb514;">Manajemen Modul Kursus</h2>
 
-  <!-- Form Tambah Modul -->
-  <div class="mb-5">
-    <h4 class="mb-3 text-white">Tambah Modul Baru</h4>
-    <form method="post" action="/admin/modules/add" class="row g-3">
-      <div class="col-md-3">
-        <label class="form-label text-white">Level</label>
-        <select name="level" class="form-select bg-dark text-white" required>
-          <option value="SDM">SDM</option>
-          <option value="SMM">SMM</option>
-          <option value="SMA">SMA</option>
-          <option value="UMM">UMM</option>
-        </select>
-      </div>
-      <div class="col-md-5">
-        <label class="form-label text-white">Judul Modul</label>
-        <input type="text" name="title" class="form-control bg-dark text-white" required>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label text-white">Video URL</label>
-        <input type="url" name="video_url" class="form-control bg-dark text-white" required>
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-warning">Tambah Modul</button>
-      </div>
-    </form>
-  </div>
+<!-- Form Tambah Modul -->
+<div class="mb-5">
+  <h4 class="mb-3 text-white">Tambah Modul Baru</h4>
+  <form method="post" action="/admin/modules/add" enctype="multipart/form-data" class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label text-white">Level</label>
+      <select name="level" class="form-select bg-dark text-white" required>
+        <option value="SDM">SDM</option>
+        <option value="SMM">SMM</option>
+        <option value="SMA">SMA</option>
+        <option value="UMM">UMM</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <label class="form-label text-white">Judul Modul</label>
+      <input type="text" name="title" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label text-white">Thumbnail</label>
+      <input type="file" name="thumbnail" class="form-control bg-dark text-white" accept="image/*" required>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label text-white">Video URL</label>
+      <input type="url" name="video_url" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-warning">Tambah Modul</button>
+    </div>
+  </form>
+</div>
+
 
   <!-- Daftar Modul -->
   <div class="mb-5">
@@ -56,7 +61,8 @@
                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus modul ini?')">Hapus</button>
               </form>
               <button type="button" class="btn btn-secondary btn-sm"
-                onclick="showEditForm('{{ m.id }}', '{{ m.level }}', `{{ m.title }}`, `{{ m.video_url }}`)">
+              
+              onclick="showEditForm('{{ m.id }}', '{{ m.level }}', `{{ m.title }}`, `{{ m.video_url }}`, `{{ m.thumbnail_url }}`)">
                 Edit
               </button>
             </td>
@@ -67,47 +73,65 @@
     </div>
   </div>
 
-  <!-- Form Edit Modul -->
-  <div id="modul-edit-section" style="display: none;" class="mb-5">
-    <h4 class="mb-3 text-white">Edit Modul</h4>
-    <form method="post" action="/admin/modules/edit" class="row g-3">
-      <input type="hidden" name="id" id="edit-id">
-      <div class="col-md-3">
-        <label class="form-label text-white">Level</label>
-        <select name="level" id="edit-level" class="form-select bg-dark text-white" required>
-          <option value="SDM">SDM</option>
-          <option value="SMM">SMM</option>
-          <option value="SMA">SMA</option>
-          <option value="UMM">UMM</option>
-        </select>
-      </div>
-      <div class="col-md-5">
-        <label class="form-label text-white">Judul Modul</label>
-        <input type="text" name="title" id="edit-title" class="form-control bg-dark text-white" required>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label text-white">Video URL</label>
-        <input type="url" name="video_url" id="edit-video_url" class="form-control bg-dark text-white" required>
-      </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
-        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Batal</button>
-      </div>
-    </form>
-  </div>
+ <!-- Form Edit Modul -->
+<div id="modul-edit-section" style="display: none;" class="mb-5">
+  <h4 class="mb-3 text-white">Edit Modul</h4>
+  <form method="post" action="/admin/modules/edit" enctype="multipart/form-data" class="row g-3">
+    <input type="hidden" name="id" id="edit-id">
+    <div class="col-md-3">
+      <label class="form-label text-white">Level</label>
+      <select name="level" id="edit-level" class="form-select bg-dark text-white" required>
+        <option value="SDM">SDM</option>
+        <option value="SMM">SMM</option>
+        <option value="SMA">SMA</option>
+        <option value="UMM">UMM</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <label class="form-label text-white">Judul Modul</label>
+      <input type="text" name="title" id="edit-title" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label text-white">Thumbnail Saat Ini</label><br>
+      <img id="edit-preview-thumbnail" src="" alt="Thumbnail Lama" class="img-fluid mb-2" style="max-height: 100px;">
+      
+      <label class="form-label text-white mt-2">Ganti Thumbnail (opsional)</label>
+      <input type="file" name="thumbnail" id="edit-thumbnail" class="form-control bg-dark text-white" accept="image/*">
+
+    </div>
+    
+    
+    <div class="col-md-4">
+      <label class="form-label text-white">Video URL</label>
+      <input type="url" name="video_url" id="edit-video_url" class="form-control bg-dark text-white" required>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
+      <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Batal</button>
+    </div>
+  </form>
+</div>
+
 </div>
 {% endblock %}
 
 {% block extra_script %}
 <script>
-  function showEditForm(id, level, title, video_url) {
-    document.getElementById("edit-id").value = id;
-    document.getElementById("edit-level").value = level;
-    document.getElementById("edit-title").value = title;
-    document.getElementById("edit-video_url").value = video_url;
-    document.getElementById("modul-edit-section").style.display = "block";
-    window.scrollTo({ top: document.getElementById("modul-edit-section").offsetTop - 100, behavior: 'smooth' });
-  }
+function showEditForm(id, level, title, video_url, thumbnail_url) {
+  document.getElementById("edit-id").value = id;
+  document.getElementById("edit-level").value = level;
+  document.getElementById("edit-title").value = title;
+  document.getElementById("edit-video_url").value = video_url;
+
+  // Tampilkan thumbnail lama
+  document.getElementById("edit-preview-thumbnail").src = thumbnail_url;
+
+  // Tampilkan form edit
+  document.getElementById("modul-edit-section").style.display = "block";
+  window.scrollTo({ top: document.getElementById("modul-edit-section").offsetTop - 100, behavior: 'smooth' });
+}
+
+
 
   function cancelEdit() {
     document.getElementById("modul-edit-section").style.display = "none";
