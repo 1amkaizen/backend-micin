@@ -23,21 +23,59 @@
 </div>
 
 
-  <!-- Bar Chart -->
-  <div class="d-flex justify-content-between align-items-end flex-wrap px-2" style="height: 220px;">
-    {% for item in anggota_growth_data %}
-      <div class="d-flex flex-column align-items-center flex-fill" style="max-width: 14.28%; padding: 0 4px;">
-        <!-- Bar Container -->
+<!-- Include Glide.js CSS & JS (letakkan di head/footer) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+
+<!-- Bar Chart with Glide slider -->
+<div class="glide d-md-none"> <!-- hanya tampil di mobile (d-md-none) -->
+  <div class="glide__track" data-glide-el="track">
+    <ul class="glide__slides p-0 m-0 d-flex" style="height:220px;">
+      {% for item in anggota_growth_data %}
+      <li class="glide__slide d-flex flex-column align-items-center px-2" style="min-width: 100px;">
         <div class="w-100 position-relative" style="height: 150px; background-color: #F2F2F2; border-radius: 6px;">
           <div class="position-absolute bottom-0 start-0 w-100"
                style="height: {{ item.percent }}%; background-color: #FFB514; border-radius: 6px 6px 0 0;">
           </div>
         </div>
-        <!-- Label -->
-        <div class="pt-2 text-white fw-semibold" style="font-size: 13px; font-family: 'Poppins', sans-serif;">
+        <div class="pt-2 text-white fw-semibold text-center" style="font-size: 13px; font-family: 'Poppins', sans-serif;">
           {{ item.label }}
         </div>
-      </div>
-    {% endfor %}
+      </li>
+      {% endfor %}
+    </ul>
   </div>
+  <div class="glide__arrows" data-glide-el="controls">
+    <button class="glide__arrow glide__arrow--left btn btn-sm btn-secondary" data-glide-dir="<">&#10094;</button>
+    <button class="glide__arrow glide__arrow--right btn btn-sm btn-secondary" data-glide-dir=">">&#10095;</button>
+  </div>
+</div>
+
+<!-- Bar Chart grid for desktop -->
+<div class="d-none d-md-flex justify-content-between align-items-end flex-wrap px-2" style="height: 220px;">
+  {% for item in anggota_growth_data %}
+    <div class="d-flex flex-column align-items-center flex-fill" style="max-width: 14.28%; padding: 0 4px;">
+      <div class="w-100 position-relative" style="height: 150px; background-color: #F2F2F2; border-radius: 6px;">
+        <div class="position-absolute bottom-0 start-0 w-100"
+             style="height: {{ item.percent }}%; background-color: #FFB514; border-radius: 6px 6px 0 0;">
+        </div>
+      </div>
+      <div class="pt-2 text-white fw-semibold" style="font-size: 13px; font-family: 'Poppins', sans-serif;">
+        {{ item.label }}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.innerWidth < 768) {
+      new Glide('.glide', {
+        type: 'slider',
+        perView: 3,
+        gap: 10,
+      }).mount();
+    }
+  });
+</script>
 </section>

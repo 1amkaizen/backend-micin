@@ -10,42 +10,42 @@
   <div class="row g-4">
     <!-- Card 1 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/28bfc977-1e75-493a-bf45-5f326987cfc2.png" alt="Tumpukan koin logam berwarna abu-abu" loading="lazy" onerror="this.style.display='none'" />
+      <img src="/static/img/upgrade_vip/1.png" loading="lazy" onerror="this.style.display='none'" />
       <h6 class="mt-2 text-warning fw-semibold">5-10 Sinyal Meme Coin Harian</h6>
       <p>Dapatkan 5-10 sinyal meme coin setiap hari dengan winrate di atas 70%.</p>
     </article>
 
     <!-- Card 2 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8b39456f-0baf-42b2-abd9-e783c45ecb0c.png" alt="Buku catatan dan pena dekat jendela yang dibanjiri cahaya matahari" loading="lazy" onerror="this.style.display='none'" />
-      <h6 class="mt-2 text-warning fw-semibold">Panduan Screening Meme Coin 1000x</h6>
-      <p>Pelajari cara screening meme coin dengan potensi kenaikan 1000x.</p>
+      <img src="/static/img/upgrade_vip/2.png" loading="lazy" onerror="this.style.display='none'" />
+      <h6 class="mt-2 text-warning fw-semibold">Panduan Screening Meme Coin 1000%</h6>
+      <p>Pelajari cara screening meme coin dengan potensi kenaikan 1000%++.</p>
     </article>
 
     <!-- Card 3 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/09b39732-11a5-4fee-9a90-3fa06a7dccdb.png" alt="Latar belakang hijau minimalis dengan teks tipis bertuliskan mentorship" loading="lazy" onerror="this.style.display='none'" />
+      <img src="/static/img/upgrade_vip/3.png" loading="lazy" onerror="this.style.display='none'" />
       <h6 class="mt-2 text-warning fw-semibold">2x Trabar/Minggu dengan Mentor</h6>
       <p>Ikuti 2 sesi trading bareng (trabar) setiap minggu dengan mentor berpengalaman.</p>
     </article>
 
     <!-- Card 4 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/47c4bcf2-ac5e-4c59-b4f1-a03dd38af67b.png" alt="Perangkat modular persegi putih modern di latar belakang hijau kusam" loading="lazy" onerror="this.style.display='none'" />
+      <img src="/static/img/upgrade_vip/4.png" loading="lazy" onerror="this.style.display='none'" />
       <h6 class="mt-2 text-warning fw-semibold">Puluhan Modul Edukasi Video</h6>
       <p>Akses puluhan modul edukasi video yang selalu diupdate setiap minggu.</p>
     </article>
 
     <!-- Card 5 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/acd8cc4c-778e-4d84-b0a3-9004a180fd97.png" alt="Ilustrasi komunitas kolaborasi dengan latar berwarna teal" loading="lazy" onerror="this.style.display='none'" />
+      <img src="/static/img/upgrade_vip/5.png" loading="lazy" onerror="this.style.display='none'" />
       <h6 class="mt-2 text-warning fw-semibold">Komunitas Solid</h6>
       <p>Bergabunglah dengan komunitas trader meme coin yang solid dan suportif.</p>
     </article>
 
     <!-- Card 6 -->
     <article class="col-md-6 col-lg-4 vip-card">
-      <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ee238ac7-ae2b-4ce1-99ac-b746b009997f.png" alt="Tumpukan koin dengan latar belakang hijau buram" loading="lazy" onerror="this.style.display='none'" />
+      <img src="/static/img/upgrade_vip/6.png" loading="lazy" onerror="this.style.display='none'" />
       <h6 class="mt-2 text-warning fw-semibold">Money Management</h6>
       <p>Terapkan strategi money management yang efektif untuk meminimalkan risiko.</p>
     </article>
@@ -56,11 +56,12 @@
   </div>
 {% else %}
 <div class="d-flex justify-content-center mt-4">
-  <a href="/bayar/vip"
-     class="btn fw-bold text-dark"
-     style="width: 195px; height: 48px; background-color: #FFB514; border-radius: 24px; display: flex; align-items: center; justify-content: center;">
+  <button class="btn fw-bold text-dark"
+          style="width: 195px; height: 48px; background-color: #FFB514; border-radius: 24px; display: flex; align-items: center; justify-content: center;"
+          data-bs-toggle="modal"
+          data-bs-target="#pilihanBayarModal">
     Upgrade Sekarang
-  </a>
+  </button>
 </div>
 
 
@@ -76,31 +77,28 @@
           Telegram Bot
         </button>
       </a>
-      
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKzifw6-EypwJpxs0HnkAZ3ewPY3DtRsO0DRlXPDRHHH1_iw/viewform" target="_blank" class="text-decoration-none"></a>
   <button type="button" class="btn btn-payment btn-solana" aria-label="Solana Pay Payment Option">Solana Pay</button>
+    </a>
 </div>
 
 
     <hr />
 
     <h5 class="fw-bold mt-4">Testimoni Komunitas</h5>
-    <div class="testimoni" >
-      <div class="testimonial-card text-center">
-        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/05a07fd8-edbf-45d2-b8d1-8a2ca5033a79.png" alt="Potret pria muda Asia dengan rambut hitam pendek mengenakan kemeja santai teduh" />
-        <p>Sejak upgrade ke VIP, strategi trading saya jadi lebih terarah dan profit meningkat!</p>
-        <div class="person-info">- Liam, Trader</div>
-      </div>
-      <div class="testimonial-card text-center">
-        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/646004ff-ead9-413e-9682-f9bb6b0e732e.png" alt="Potret wanita muda berambut panjang coklat tersenyum dengan latar taman buram" />
-        <p>Materi edukasi VIP sangat membantu saya memahami seluk-beluk pasar meme coin.</p>
-        <div class="person-info">- Sophia, Investor</div>
-      </div>
-      <div class="testimonial-card text-center">
-        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/91d9dfb8-6ede-497b-8cb7-8371c4ad08e7.png" alt="Potret pria dewasa mengenakan topi dan jaket santai tersenyum lebar" />
-        <p>Komunitas VIP sangat suportif, banyak diskusi menarik dan saling berbagi informasi.</p>
-        <div class="person-info">- Owen, Enthusiast</div>
-      </div>
+    <div class="container mt-3 mb-5 d-flex justify-content-center">
+      <img src="/static/img/TESTIMONI.png" alt="Testimoni komunitas" class="img-fluid mx-auto" style="max-width: 800px; width: 100%; height: auto;" />
     </div>
+    
+    <style>
+      @media (max-width: 576px) {
+        /* Untuk layar kecil, batasi lebar gambar maksimal 100% dari container, tapi jangan melebihi 320px */
+        .container img.img-fluid.mx-auto {
+          max-width: 320px !important;
+          width: 100% !important;
+        }
+      }
+    </style>
   </section>
 
 </section>

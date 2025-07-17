@@ -49,8 +49,6 @@ async def user_dashboard(request: Request, telegram_id: str = Depends(require_lo
     else:
         user_badge_level = "SDM"
 
-    # ===============================
-    # Setup waktu awal dan fungsi bantu
     now = datetime.utcnow()
     bulan_ini = now.replace(day=1)
     bulan_lalu = (bulan_ini - timedelta(days=1)).replace(day=1)
@@ -133,6 +131,13 @@ async def user_dashboard(request: Request, telegram_id: str = Depends(require_lo
     bulan_order = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
     anggota_growth_data = [{"label": b, "percent": min(bulan_counter.get(b, 0) * 5, 100)} for b in bulan_order]
 
+    # Tambahan: user_growth_percent
+    this_month_label = now.strftime("%b")
+    prev_month_label = (now.replace(day=1) - timedelta(days=1)).strftime("%b")
+    growth_now = bulan_counter.get(this_month_label, 0)
+    growth_prev = bulan_counter.get(prev_month_label, 1) or 1  # hindari 0
+    user_growth_percent = round((growth_now - growth_prev) / growth_prev * 100, 2)
+
     return templates.TemplateResponse("user/dashboard/dashboard.html", {
         "request": request,
         "telegram_id": telegram_id,
@@ -154,9 +159,9 @@ async def user_dashboard(request: Request, telegram_id: str = Depends(require_lo
         "client_key": MIDTRANS_CLIENT_KEY,
         "aktivitas": aktivitas,
         "anggota_growth_data": anggota_growth_data,
-        "user_badge_level": user_badge_level  # badge level dikirim ke template
+        "user_growth_percent": user_growth_percent,
+        "user_badge_level": user_badge_level
     })
-
 
 @router.get("/dashboard/partial/{section}", response_class=HTMLResponse)
 async def get_dashboard_partial(request: Request, section: str, telegram_id: str = Depends(require_login)):

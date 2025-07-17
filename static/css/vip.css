@@ -11,11 +11,12 @@ h3 {
   color: #ffc107;
 }
 /* Card image style */
+/* Card image style */
 .vip-card img {
   border-radius: 15px;
   object-fit: cover;
-  height: 140px;
   width: 100%;
+  height: auto; /* ubah dari fixed 140px ke auto supaya proporsional */
   transition: transform 0.3s ease;
   background-color: #222537;
 }

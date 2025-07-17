@@ -13,7 +13,7 @@ import logging
 import os
 from config import BASE_URL 
 from fastapi.templating import Jinja2Templates
-
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 templates = Jinja2Templates(directory="frontend")
@@ -30,13 +30,16 @@ async def get_setting_price(key: str) -> int:
 # ===============================
 @router.get("/bayar/vip", response_class=HTMLResponse)
 async def bayar_vip(request: Request, telegram_id: str = Depends(require_login)):
+    if isinstance(telegram_id, RedirectResponse):
+        return telegram_id  # redirect ke login kalau belum login
+
     user_res = supabase.table("Users").select("*").eq("user_id", int(telegram_id)).single().execute()
     user = user_res.data
     if not user:
         return HTMLResponse("User tidak ditemukan", status_code=404)
 
     order_id = f"VIPWEB-{uuid.uuid4().hex[:10].upper()}"
-    gross_amount = await get_setting_price("vip_price")  # ✅ Ambil dari Settings
+    gross_amount = await get_setting_price("vip_price")
 
     item_details = [{
         "id": "vip",
