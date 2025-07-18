@@ -72,7 +72,11 @@ async def tambah_modul(
         raise HTTPException(status_code=500, detail="Gagal menyimpan data modul")
 
     print("[SUCCESS] Modul berhasil ditambahkan.")
-    return RedirectResponse(url="/admin/dashboard/kelola-module", status_code=302)
+    return RedirectResponse(
+        url="/admin/dashboard/kelola-module?success=Modul berhasil ditambahkan", 
+        status_code=302
+    )
+
 
 
 @router.post("/admin/modules/edit")
@@ -126,7 +130,11 @@ async def edit_modul(
         raise HTTPException(status_code=500, detail="Gagal mengupdate modul")
 
     print("[SUCCESS] Modul berhasil diupdate.")
-    return RedirectResponse(url="/admin/dashboard/kelola-module", status_code=302)
+    return RedirectResponse(
+        url="/admin/dashboard/kelola-module?success=Modul berhasil diupdate", 
+        status_code=302
+    )
+
 
 
 @router.post("/admin/modules/delete")
@@ -145,4 +153,8 @@ async def delete_modul(
         raise HTTPException(status_code=500, detail="Gagal menghapus modul")
 
     print("[SUCCESS] Modul berhasil dihapus.")
-    return RedirectResponse(url="/admin/dashboard/kelola-module", status_code=302)
+    return RedirectResponse(
+        url="/admin/dashboard/kelola-module?success=Modul berhasil dihapus", 
+        status_code=302
+    )
+
