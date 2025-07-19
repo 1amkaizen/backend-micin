@@ -1,6 +1,6 @@
 <!-- Modal Pilihan Bayar -->
 <div class="modal fade" id="pilihanBayarModal" tabindex="-1" aria-labelledby="pilihanBayarModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-dark text-white border-warning">
       <div class="modal-header">
         <h5 class="modal-title" id="pilihanBayarModalLabel">Pilih Metode Pembayaran</h5>
@@ -32,25 +32,39 @@
 </div>
 
 {% if not request.session.get("telegram_id") %}
+<style>
+  .modal-custom-width {
+    max-width: 700px; /* Lebar custom, antara default dan modal-lg */
+  }
+</style>
+
 <!-- Modal Input Data Manual (Non-login) -->
 <div class="modal fade" id="manualVipModal" tabindex="-1" aria-labelledby="manualVipModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="post" action="/bayar/vip/manual">
+  <div class="modal-dialog modal-dialog-centered modal-custom-width">
+    <form method="post" action="/bayar/vip/manual" class="w-100">
       <div class="modal-content bg-dark text-white border-warning">
         <div class="modal-header">
           <h5 class="modal-title" id="manualVipModalLabel">Form VIP Tanpa Login</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body d-grid gap-3">
-          <input type="text" name="username" class="form-control" placeholder="Username Telegram (tanpa @)" autocomplete="off" required />
-          <input type="text" name="fullname" class="form-control" placeholder="Nama Lengkap" autocomplete="off" required />
-          <input type="email" name="email" class="form-control" placeholder="Alamat Email" autocomplete="off" required />
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <input type="text" name="username" class="form-control" placeholder="Username Telegram (tanpa @)" autocomplete="off" required />
+          </div>
+          <div class="mb-3">
+            <input type="text" name="Nama Telegram" class="form-control" placeholder="Nama Telegram" autocomplete="off" required />
+          </div>
+          <div class="mb-3">
+            <input type="email" name="email" class="form-control" placeholder="Alamat Email" autocomplete="off" required />
+          </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer px-4">
           <button type="submit" class="btn btn-warning w-100 fw-bold">Lanjutkan Pembayaran</button>
         </div>
       </div>
     </form>
   </div>
 </div>
+
+
 {% endif %}

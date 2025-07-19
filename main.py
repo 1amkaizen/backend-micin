@@ -27,6 +27,7 @@ from backend.routes import (
     admin_auth,
     admin_dashboard
 )
+from backend.routes import contact
 
 # === Middleware custom untuk limit upload size ===
 class LimitUploadSizeMiddleware(BaseHTTPMiddleware):
@@ -86,6 +87,9 @@ app.include_router(kursus.router)
 app.include_router(progress.router)
 app.include_router(ujian.router)
 app.include_router(payment.router)
+app.include_router(contact.router)
+
+
 
 # Admin routes
 app.include_router(admin_auth.router)

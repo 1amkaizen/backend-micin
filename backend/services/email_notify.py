@@ -1,34 +1,53 @@
-# File: backend/services/email_notify.py
+# Letak file: backend/services/email_notify.py
 
 from email.message import EmailMessage
 from aiosmtplib import send
-from config import SMTP_USER, SMTP_PASS
+from config import (
+    SMTP_ADMIN_USER,
+    SMTP_ADMIN_PASS,
+    SMTP_HOST,
+    SMTP_PORT,
+    CHANNEL_VIP_LINK,
+    GROUP_VIP_LINK,
+    BOT_USERNAME
+)
 import logging
 
 async def send_email_notify_manual(to_email: str, username: str):
     msg = EmailMessage()
-    msg["Subject"] = "Pembayaran VIP Micin"
-    msg["From"] = SMTP_USER
-    msg["To"] = to_email
+    msg["Subject"] = "Pembayaran VIP Micin Berhasil"
+    msg["From"] = SMTP_ADMIN_USER  # Kirim dari admin@micin.id
+    msg["To"] = to_email            # Tujuan user
 
     msg.set_content(f"""
 Halo {username},
 
-Terima kasih telah melakukan pendaftaran member VIP Micin.
+Pembayaran VIP Anda telah berhasil kami terima dan proses.
 
-Status pembayaran Anda sedang diproses. Silakan tunggu konfirmasi selanjutnya.
+Selamat! Anda sekarang resmi menjadi member VIP Micin.
 
-Salam,
+Silakan bergabung di channel dan grup VIP berikut untuk mendapatkan update dan akses eksklusif:
+
+Channel VIP: {CHANNEL_VIP_LINK}
+Grup VIP: {GROUP_VIP_LINK}
+
+Anda juga bisa menggunakan bot Telegram kami untuk berbagai fitur:
+Bot Telegram: https://t.me/{BOT_USERNAME}
+
+
+Terima kasih telah bergabung dan dukung terus Micin.id!
+
+Salam hangat,
 Team Micin.id
 """)
 
     try:
         await send(
-            msg,  # <-- ini diubah: positional arg
-            hostname="mail.micin.id",
-            port=465,
-            username=SMTP_USER,
-            password=SMTP_PASS,
+            msg,
+            hostname=SMTP_HOST,
+            port=SMTP_PORT,
+            username=SMTP_ADMIN_USER,
+            password=SMTP_ADMIN_PASS,
             use_tls=True,
         )
         logging.info(f"[EMAIL] Email berhasil dikirim ke {to_email}")

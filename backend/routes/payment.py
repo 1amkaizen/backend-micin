@@ -76,13 +76,14 @@ async def bayar_vip(request: Request, telegram_id: str = Depends(require_login))
         "snap_url": MIDTRANS_SNAP_URL, 
     })
 
+
 # ===============================
 # BAYAR VIP TANPA LOGIN (MANUAL)
 # ===============================
 @router.post("/bayar/vip/manual", response_class=HTMLResponse)
 async def bayar_vip_manual(
     request: Request,
-    background_tasks: BackgroundTasks,  # ← WAJIB supaya bisa kirim email
+    background_tasks: BackgroundTasks,
     username: str = Form(...),
     fullname: str = Form(...),
     email: str = Form(...)
@@ -104,7 +105,6 @@ async def bayar_vip_manual(
 
     snap_token = create_snap_transaction(order_id, gross_amount, item_details, customer)
 
-    # Simpan ke Supabase
     supabase.table("Transactions").insert({
         "order_id": order_id,
         "user_id": None,
@@ -116,8 +116,8 @@ async def bayar_vip_manual(
         "transaction_time": datetime.utcnow().replace(microsecond=0).isoformat()
     }).execute()
 
-    # Kirim email konfirmasi (async)
-    background_tasks.add_task(send_email_notify_manual, email, username)
+    # Tidak kirim email dulu di sini.
+    # Email akan dikirim setelah webhook konfirmasi pembayaran.
 
     return templates.TemplateResponse("user/bayar_vip.html", {
         "request": request,
