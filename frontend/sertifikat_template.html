@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Certificate</title>
+    <link rel="stylesheet" href="{{ base_url }}/static/css/bootstrap.min.css">
+
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .certificate-container {
+            max-width: 800px;
+            margin:-50px auto;
+            padding: 30px;
+            border: 15px solid #ffb514;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .certificate-border {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed #030018;
+            pointer-events: none;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            color: #030018;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 32px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            color: #ffb514;
+            font-size: 18px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .certificate-body {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .presented-to {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #030018;
+        }
+        
+        .recipient-name {
+            font-size: 36px;
+            font-weight: bold;
+            color: #030018;
+            border-bottom: 2px solid #ffb514;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .achievement {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        
+        .signature {
+            text-align: center;
+            position: relative;
+            flex: 1;
+            padding: 0 20px;
+        }
+        
+        .signature-line {
+            border-top: 1px solid #030018;
+            width: 150px;
+            margin: 30px auto 10px;
+            position: relative;
+        }
+        
+        .signature-title {
+            color: #030018;
+            font-size: 14px;
+            margin-top: -5px;
+        }
+        
+        .date {
+            color: #030018;
+            margin-top: 30px;
+            font-size: 16px;
+        }
+        
+        .seal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            opacity: 0.8;
+        }
+        
+        .pattern {
+            position: absolute;
+            width: 150px;
+            opacity: 0.1;
+        }
+        
+        .pattern-1 {
+            top: 30px;
+            left: 30px;
+            transform: rotate(-15deg);
+        }
+        
+        .pattern-2 {
+            bottom: 30px;
+            right: 30px;
+            transform: rotate(15deg);
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 120px;
+            font-weight: bold;
+            color: rgba(3, 0, 24, 0.05);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            .certificate-container {
+                border: 15px solid #ffb514;
+                margin: 0;
+                padding: 30px;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <div class="certificate-container">
+            <!-- Decorative elements -->
+            <div class="certificate-border"></div>
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/70af6a2a-4e4e-4f1d-9e91-04ed3c693502.png" alt="Decorative geometric pattern in dark blue" class="pattern pattern-1">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/306bc59a-7e5a-4ae5-b17d-2fc1cbc32a12.png" alt="Decorative geometric pattern in dark blue" class="pattern pattern-2">
+            <div class="watermark">MICIN.ID</div>
+            
+            <!-- Header -->
+            <div class="header">
+              <img src="file:///{{ base_path }}/static/img/logo.png" alt="Company logo" class="logo">
+
+
+                <h1>SERTIFIKAT KELULUSAN</h1>
+                <div class="subtitle">Sertifikat ini dengan bangga di berikan kepada</div>
+            </div>
+            
+            <!-- Body -->
+            <div class="certificate-body">
+                <div class="presented-to"></div>
+                <div class="recipient-name">{{ nama }}</div>
+                <div class="achievement">
+                  atas keberhasilannya menyelesaikan program pembelajaran
+                  <strong>"Level {{ level }} - Micin.ID"</strong>
+                  dengan baik dan menunjukkan komitmen dalam memahami materi edukasi cryptocurrency dan memecoin.
+              </div>
+              
+              <div class="date">Date: {{ tanggal }}</div>
+
+            </div>
+            
+            <!-- Signatures -->
+            <div class="signature-area">
+                <div class="signature">
+                  <div class="signature-name" style="font-family: 'Alex Brush', cursive; font-size: 28px;">Andi Pratama</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-title">Kepala Program</div>
+                </div>
+                <div class="signature">
+                  <div class="signature-name" style="font-family: 'Alex Brush', cursive; font-size: 28px;">Andi Pratama</div>
+                    <div class="signature-line"></div>
+                    <div class="signature-title">CEO Micin.ID</div>
+                </div>
+            </div>
+            
+            <!-- Official Seal -->
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f18c698d-a5ec-475c-83a2-fcd2f2c4f990.png" alt="Official golden seal with dark blue text" class="seal">
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

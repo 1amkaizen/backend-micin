@@ -125,8 +125,10 @@ async def update_permissions(
     can_manage_module: Optional[str] = Form(None),
     can_manage_exam: Optional[str] = Form(None),
     can_manage_transaksi: Optional[str] = Form(None),
-    can_manage_prices: Optional[str] = Form(None),  # 🆕
-    can_manage_addon_permissions: Optional[str] = Form(None),  # 🆕
+    can_manage_prices: Optional[str] = Form(None),  
+    can_manage_addon_permissions: Optional[str] = Form(None), 
+    can_manage_download: Optional[str] = Form(None),      
+    can_manage_banner: Optional[str] = Form(None),
 ):
     current_admin = await require_admin(request)
     if current_admin["role"] != "superadmin":
@@ -137,8 +139,10 @@ async def update_permissions(
         "can_manage_module": bool(can_manage_module),
         "can_manage_exam": bool(can_manage_exam),
         "can_manage_transaksi": bool(can_manage_transaksi),
-        "can_manage_prices": bool(can_manage_prices),  # 🆕
-        "can_manage_addon_permissions": bool(can_manage_addon_permissions),  # 🆕
+        "can_manage_prices": bool(can_manage_prices), 
+        "can_manage_addon_permissions": bool(can_manage_addon_permissions),  
+        "can_manage_download": bool(can_manage_download),     
+        "can_manage_banner": bool(can_manage_banner),  
     }
 
     supabase.table("Admins").update({

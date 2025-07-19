@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4" style="color: #ffb514;">Kelola Banner Dashboard</h2>
+
+  <div class="mb-4">
+    <h5>Banner Aktif Saat Ini:</h5>
+    {% if banner_url %}
+      <img src="{{ banner_url }}" alt="Banner Sekarang" class="img-fluid rounded shadow" style="max-height: 250px;">
+    {% else %}
+      <p class="text-white">Belum ada banner yang diatur.</p>
+    {% endif %}
+  </div>
+
+  <form method="post" action="/admin/dashboard/kelola-banner" enctype="multipart/form-data" class="mt-4">
+    <div class="mb-3">
+      <label for="file" class="form-label">Upload Banner Baru (jpg, png, webp):</label>
+      <input type="file" class="form-control" id="file" name="file" accept=".jpg,.jpeg,.png,.webp" required>
+    </div>
+    <button type="submit" class="btn btn-warning">Upload & Ganti Banner</button>
+  </form>
+</div>
+{% endblock %}

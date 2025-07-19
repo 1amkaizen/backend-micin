@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Midtrans Snap.js -->
-  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+  <script src="{{ snap_url }}" data-client-key="{{ client_key }}"></script>
 
   {% block extra_head %}{% endblock %}
 </head>
@@ -91,6 +91,25 @@
       });
     });
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".load-partial").forEach(function (el) {
+        el.addEventListener("click", function (e) {
+          e.preventDefault();
+          const url = el.getAttribute("data-url");
+  
+          fetch(url)
+            .then((res) => res.text())
+            .then((html) => {
+              document.getElementById("main-content").innerHTML = html;
+              history.pushState(null, "", "/dashboard");  // atau url kalau mau ubah URL juga
+            })
+            .catch((err) => console.error("Error loading partial:", err));
+        });
+      });
+    });
+  </script>
+  
   {% endblock %}
 
   <!-- Solana handler -->

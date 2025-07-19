@@ -1,32 +1,283 @@
+<style>
+
+  /* Sidebar nav items */
+  .nav-link {
+    color: #cbcbd3;
+    font-weight: 500;
+    padding: 0.625rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s;
+    user-select: none;
+  }
+
+  .nav-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  .nav-link:hover,
+  .nav-link:focus {
+    background-color: #35297c;
+    color: #f8b700;
+    text-decoration: none;
+  }
+
+  /* Active item */
+  .nav-link.active {
+    background-color: #553c95;
+    color: #f8b700;
+    font-weight: 600;
+  }
+
+  /* Special styled active support item */
+  .nav-link.support-active {
+    background-color: #553c95;
+    color: #f8b700 !important;
+    font-weight: 700;
+    border-radius: 1.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .nav-link.support-active svg {
+    fill: #f8b700;
+    font-weight: 900;
+  }
+
+  /* Content wrapper to offset sidebar */
+  .content-wrapper {
+    margin-left: 270px;
+    padding: 2rem 3rem 4rem 3rem;
+    flex-grow: 1;
+  }
+
+  /* Header */
+  .page-header {
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: #f8b700;
+    margin-bottom: 1.5rem;
+    user-select: none;
+  }
+
+
+  .btn-email {
+    background-color: #0d72ff;
+    color: white;
+    font-weight: 600;
+    border-radius: 30px;
+    padding: 0.5rem 1.75rem;
+    user-select: none;
+    box-shadow: 0 0 10px rgb(13 114 255 / 0.5);
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-email:hover,
+  .btn-email:focus {
+    background-color: #0955b3;
+    color: white;
+    text-decoration: none;
+  }
+
+  /* FAQ link below buttons */
+  .faq-link {
+    color: #f8f9fa;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    user-select: none;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .faq-link svg {
+    width: 18px;
+    height: 18px;
+    fill: #f8f9fa;
+  }
+
+  .faq-link:hover,
+  .faq-link:focus {
+    text-decoration: underline;
+    color: #f8b700;
+    outline: none;
+  }
+
+  /* Contact form styles */
+  form.form-contact {
+    margin-top: 1.8rem;
+    border: 1px solid #fff;
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.8rem 2rem 2.2rem 2rem;
+    user-select: none;
+  }
+
+  form.form-contact label {
+    font-weight: 700;
+    color: #dee2e6;
+    display: block;
+    user-select: text;
+  }
+
+  form.form-contact input[type="text"],
+  form.form-contact input[type="email"],
+  form.form-contact textarea {
+    background-color: #0a0a23;
+    border: 1px solid #fff;
+    border-radius: 0.5rem;
+    color: #dee2e6;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    resize: vertical;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    font-family: inherit;
+  }
+
+  form.form-contact input[type="text"]:focus,
+  form.form-contact input[type="email"]:focus,
+  form.form-contact textarea:focus {
+    border-color: #f8b700;
+    outline: none;
+    background-color: #120f2c;
+  }
+
+  form.form-contact textarea {
+    min-height: 120px;
+    font-family: inherit;
+  }
+
+  /* Submit button bottom right */
+  form.form-contact .btn-submit {
+  background-color: #f8b700;
+  color: #120f2c;
+  border: none;
+  padding: 0.5rem 1.6rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 0 6px rgb(248 183 0 / 0.5);
+  transition: background-color 0.3s;
+}
+form.form-contact input::placeholder,
+form.form-contact textarea::placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+
+  form.form-contact .btn-submit:hover,
+  form.form-contact .btn-submit:focus {
+    background-color: #e6ad00;
+    outline: none;
+  }
+
+  /* Additional Info container */
+  .additional-info {
+    margin-top: 2rem;
+    background-color: #0d72ff;
+    border-radius: 0 0 1rem 1rem;
+    color: white;
+    padding: 1.25rem 2rem;
+    font-weight: 600;
+    user-select: none;
+    line-height: 1.5;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 991.98px) {
+    .content-wrapper {
+      margin-left: 0;
+      padding: 2rem 1rem 4rem 1rem;
+    }
+
+    .sidebar {
+      position: relative;
+      width: 100%;
+      border-radius: 0 0 1rem 1rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .nav-link.support-active {
+      justify-content: flex-start;
+      border-radius: 0.5rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+</style>
+
 <!-- File: frontend/user/dashboard/partials/bantuan.html -->
-<section class="container py-4">
-  <h2 class="fw-bold text-warning mb-4">Pusat Bantuan</h2>
+<section class="container py-4"  aria-label="Konten Bantuan dan Dukungan">
+  <h1 class="page-header">Bantuan &amp; Dukungan</h1>
 
-  <div class="bg-dark text-white p-4 rounded shadow-sm">
-    <p>Butuh bantuan? Kamu bisa hubungi tim support kami melalui:</p>
-    <ul class="list-unstyled">
-      <li>
-        <i class="bi bi-telegram me-2 text-warning"></i>
-        Telegram:
-        <a href="https://t.me/prossultan" class="text-warning fw-bold text-decoration-none" target="_blank">
-          t.me/prossultan
-        </a>
-      </li>
-      <li>
-        <i class="bi bi-envelope me-2 text-warning"></i>
-        Email:
-        <a href="mailto:support@micin.id" class="fw-bold text-warning text-decoration-none">
-          support@micin.id
-        </a>
-      </li>
-    </ul>
-    
+  <section class="mb-4">
+  
+    <!-- Letak: misalnya di dalam container atau row -->
+<div class="text-center my-4">
+  <a href="https://t.me/prossultan" 
+   target="_blank" 
+   rel="noopener" 
+   class="btn mb-3 d-inline-flex align-items-center gap-2 fw-bold text-dark" 
+   style="background-color: #f8b700; border-radius: 30px; box-shadow: 0 0 8px rgba(248, 183, 0, 0.4); padding: 0.5rem 1.5rem;"
+   role="button" 
+   aria-label="Hubungi Admin via Telegram">
+  <span aria-hidden="true">💬</span> Hubungi Admin via Telegram
+</a>
 
-    <hr class="text-secondary">
+  <br />
+  <a href="mailto:support@micin.id" class="btn btn-email mb-3" role="button" aria-label="Kirim Email ke support@micin.id">
+    <span aria-hidden="true">✉️</span> Kirim Email ke support@micin.id
+  </a>
+  <br />
+  
+  <a href="#" class="faq-link d-inline-block mt-2" aria-label="Lihat FAQ">
+    <i class="bi bi-file-earmark-fill"></i>
+    <span class="ms-1">Lihat FAQ</span>
+  </a>
+</div>
 
-    <p>Atau baca FAQ kami untuk jawaban cepat:</p>
-    <a href="/dashboard" class="btn btn-outline-warning fw-bold">
-      <i class="bi bi-question-circle me-1"></i> Lihat FAQ
-    </a>
-  </div>
+  </section>
+
+  <section aria-labelledby="form-contact-heading">
+    <form class="form-contact" novalidate>
+      <h2 id="form-contact-heading" class="fw-bold mb-3">Formulir Kontak</h2>
+      <div class="mb-3">
+        <label for="nama" class="form-label">Nama</label>
+        <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Anda" aria-required="true" />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Email Anda" aria-required="true" />
+      </div>
+      <div class="mb-3">
+        <label for="pesan" class="form-label">Pesan</label>
+        <textarea class="form-control" id="pesan" name="pesan" placeholder="" aria-required="true"></textarea>
+      </div>
+      <div class="mt-3 d-flex justify-content-end mb-0">
+        <button type="submit" class="btn-submit" aria-label="Kirim Pesan">Kirim Pesan</button>
+      </div>
+      
+    </form>
+  </section>
+
+  <section class="additional-info mt-0" aria-label="Informasi Tambahan">
+    <h3 class="fw-bold mb-2">Informasi Tambahan</h3>
+    <p class="mb-1">Jam Operasional: 08.00–22.00 WIB</p>
+    <p class="mb-1">Respons tercepat via Telegram</p>
+    <p class="mb-0">Tidak melayani pengembalian dana</p>
+  </section>
+
 </section>

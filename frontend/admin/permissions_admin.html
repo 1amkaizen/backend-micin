@@ -25,12 +25,23 @@
       <label class="form-check-label text-white" for="can_manage_transaksi">Kelola Transaksi</label>
     </div>
     
-    <div class="form-check form-switch mt-2 mb-4">
+    <div class="form-check form-switch mt-2">
       <input class="form-check-input" type="checkbox" id="can_manage_prices" name="can_manage_prices" {% if permissions.can_manage_prices %}checked{% endif %}>
       <label class="form-check-label text-white" for="can_manage_prices">Kelola Harga</label>
     </div>
 
-    
+    <!-- Kelola Download -->
+<div class="form-check form-switch mt-2">
+  <input class="form-check-input" type="checkbox" id="can_manage_download" name="can_manage_download" {% if permissions.can_manage_download %}checked{% endif %}>
+  <label class="form-check-label text-white" for="can_manage_download">Kelola Download</label>
+</div>
+
+<!-- Kelola Banner -->
+<div class="form-check form-switch mt-2 mb-4">
+  <input class="form-check-input" type="checkbox" id="can_manage_banner" name="can_manage_banner" {% if permissions.can_manage_banner %}checked{% endif %}>
+  <label class="form-check-label text-white" for="can_manage_banner">Kelola Banner</label>
+</div>
+
 
     <button type="submit" class="btn btn-warning">Simpan Akses</button>
     <a href="/admin/dashboard/kelola-admin" class="btn btn-secondary">Kembali</a>

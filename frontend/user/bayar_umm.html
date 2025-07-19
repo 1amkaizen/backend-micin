@@ -36,7 +36,7 @@
 </div>
 
 {% if not pesan %}
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+<script src="{{ snap_url }}" data-client-key="{{ client_key }}"></script>
 <script>
   function bayarUMM() {
     window.snap.pay("{{ snap_token }}", {

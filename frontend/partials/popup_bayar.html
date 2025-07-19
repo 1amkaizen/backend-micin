@@ -1,16 +1,56 @@
-    <!-- Modal Pilihan Bayar -->
-    <div class="modal fade" id="pilihanBayarModal" tabindex="-1" aria-labelledby="pilihanBayarModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content bg-dark text-white border-warning">
-          <div class="modal-header">
-            <h5 class="modal-title" id="pilihanBayarModalLabel">Pilih Metode Pembayaran</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body d-grid gap-3">
-            <a href="/bayar/vip" class="btn btn-warning w-100 fw-bold">Bayar Via (Midtrans)</a>
-            <a href="https://t.me/micindotidbot" class="btn btn-primary w-100 fw-bold" target="_blank">Bayar via Bot Telegram</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKzifw6-EypwJpxs0HnkAZ3ewPY3DtRsO0DRlXPDRHHH1_iw/viewform" class="btn btn-success w-100 fw-bold" target="_blank">Bayar via Solana</a>
-          </div>
-        </div>
+<!-- Modal Pilihan Bayar -->
+<div class="modal fade" id="pilihanBayarModal" tabindex="-1" aria-labelledby="pilihanBayarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white border-warning">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pilihanBayarModalLabel">Pilih Metode Pembayaran</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-grid gap-3">
+
+        {% if request.session.get("telegram_id") %}
+          <!-- Sudah login -->
+          <a href="/bayar/vip" class="btn btn-warning w-100 fw-bold">Bayar Via (Midtrans)</a>
+        {% else %}
+          <!-- Belum login -->
+          <button class="btn btn-warning w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#manualVipModal">
+            Bayar Via (Midtrans)
+          </button>
+        {% endif %}
+
+        <a href="https://t.me/micindotidbot" class="btn btn-primary w-100 fw-bold" target="_blank">
+          Bayar via Bot Telegram
+        </a>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdKzifw6-EypwJpxs0HnkAZ3ewPY3DtRsO0DRlXPDRHHH1_iw/viewform"
+           class="btn btn-success w-100 fw-bold" target="_blank">
+          Bayar via Solana
+        </a>
       </div>
     </div>
+  </div>
+</div>
+
+{% if not request.session.get("telegram_id") %}
+<!-- Modal Input Data Manual (Non-login) -->
+<div class="modal fade" id="manualVipModal" tabindex="-1" aria-labelledby="manualVipModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form method="post" action="/bayar/vip/manual">
+      <div class="modal-content bg-dark text-white border-warning">
+        <div class="modal-header">
+          <h5 class="modal-title" id="manualVipModalLabel">Form VIP Tanpa Login</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body d-grid gap-3">
+          <input type="text" name="username" class="form-control" placeholder="Username Telegram (tanpa @)" autocomplete="off" required />
+          <input type="text" name="fullname" class="form-control" placeholder="Nama Lengkap" autocomplete="off" required />
+          <input type="email" name="email" class="form-control" placeholder="Alamat Email" autocomplete="off" required />
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning w-100 fw-bold">Lanjutkan Pembayaran</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endif %}

@@ -135,8 +135,12 @@ async def user_dashboard(request: Request, telegram_id: str = Depends(require_lo
     this_month_label = now.strftime("%b")
     prev_month_label = (now.replace(day=1) - timedelta(days=1)).strftime("%b")
     growth_now = bulan_counter.get(this_month_label, 0)
-    growth_prev = bulan_counter.get(prev_month_label, 1) or 1  # hindari 0
+    growth_prev = bulan_counter.get(prev_month_label, 1) or 1
     user_growth_percent = round((growth_now - growth_prev) / growth_prev * 100, 2)
+
+    # Ambil URL banner dashboard dari tabel Settings
+    banner = supabase.table("Settings").select("value").eq("key", "dashboard_banner").execute()
+    dashboard_banner_url = banner.data[0]["value"] if banner.data else None
 
     return templates.TemplateResponse("user/dashboard/dashboard.html", {
         "request": request,
@@ -160,7 +164,8 @@ async def user_dashboard(request: Request, telegram_id: str = Depends(require_lo
         "aktivitas": aktivitas,
         "anggota_growth_data": anggota_growth_data,
         "user_growth_percent": user_growth_percent,
-        "user_badge_level": user_badge_level
+        "user_badge_level": user_badge_level,
+        "dashboard_banner_url": dashboard_banner_url  # ⬅️ Tambahan ini
     })
 
 @router.get("/dashboard/partial/{section}", response_class=HTMLResponse)
@@ -197,6 +202,15 @@ async def get_dashboard_partial(request: Request, section: str, telegram_id: str
         vip_since = safe_parse_date(user.get("vip_since"))
         created_at = safe_parse_date(user.get("created_at"))
 
+        # Tentukan level badge user
+        user_badge_level = "SDM"
+        if user.get("is_vip"):
+            user_badge_level = "SMM"
+        if user.get("is_vip") and user.get("is_sma_addon"):
+            user_badge_level = "SMA"
+        if user.get("is_vip") and user.get("is_sma_addon") and user.get("is_umm"):
+            user_badge_level = "UMM"
+
         return templates.TemplateResponse("user/dashboard/partials/akun.html", {
             "request": request,
             "username": user.get("username"),
@@ -205,7 +219,8 @@ async def get_dashboard_partial(request: Request, section: str, telegram_id: str
             "vip_since": vip_since,
             "created_at": created_at,
             "user_photo": user.get("photo_url"),
-        })
+            "user_badge_level": user_badge_level,  # ← kirim ke template
+        })  
 
 
 
@@ -624,9 +639,8 @@ async def partial_download(request: Request, telegram_id: str = Depends(require_
 
     last_module = None
 
-    # ✅ Loop tiap level aktif
     for level in level_aktif:
-        # ✅ Ambil daftar modul dan hitung progress
+        # ✅ Ambil daftar modul
         modul_res = supabase.table("Modules").select("id, order_index, title") \
             .eq("level", level).order("order_index").execute()
         modul_list = modul_res.data or []
@@ -640,7 +654,7 @@ async def partial_download(request: Request, telegram_id: str = Depends(require_
         persen = round((jumlah_selesai / total) * 100) if total > 0 else 0
         summary["progress"][level] = persen
 
-        # ✅ Ambil hasil ujian terakhir YANG LULUS
+        # ✅ Ambil hasil ujian terakhir yang lulus
         ujian_res = supabase.table("ExamResults").select("score, passed, level") \
             .eq("user_id", int(telegram_id)) \
             .eq("level", level) \
@@ -656,7 +670,7 @@ async def partial_download(request: Request, telegram_id: str = Depends(require_
                 "sertifikat_url": sertifikat_url
             }
 
-        # ✅ Ambil modul terakhir yang belum selesai (1x ambil aja)
+        # ✅ Ambil modul terakhir yang belum selesai
         if not last_module:
             belum_selesai = [m for m in modul_list if not selesai_map.get(m["id"], False)]
             modul_terakhir = belum_selesai[0] if belum_selesai else modul_list[-1] if modul_list else None
@@ -669,11 +683,19 @@ async def partial_download(request: Request, telegram_id: str = Depends(require_
 
     summary["modul_terakhir"] = last_module
 
-    # ✅ Render ke template partial
+    # ✅ Tambahan: Ambil data file Downloads
+    result = supabase.table("Downloads").select("*").order("created_at", desc=True).execute()
+    all_files = result.data or []
+
+    tipe_list = sorted(list(set(f["file_type"] for f in all_files)))
+    download_dict = {tipe: [f for f in all_files if f["file_type"] == tipe] for tipe in tipe_list}
+
     return templates.TemplateResponse("user/dashboard/partials/download.html", {
         "request": request,
         "summary": summary,
-        "telegram_id": telegram_id
+        "telegram_id": telegram_id,
+        "tipe_list": tipe_list,
+        "grouped_files": download_dict
     })
 
 

@@ -1,46 +1,256 @@
 <!-- File: frontend/user/dashboard/partials/akun.html -->
-<section class="container py-4">
-  <h2 class="fw-bold mb-4" style="color: #FFB514;">Profil Saya</h2>
+<style>
+  /* Main content */
 
-  <div class="profile-box d-flex align-items-center gap-3 mb-4">
-    {% if user_photo %}
-      <img src="https://images.weserv.nl/?url={{ user_photo | replace('https://', '') }}"
-           class="rounded-circle border border-2 border-light"
-           width="64" height="64"
-           style="object-fit: cover;" />
-    {% else %}
-      <i class="bi bi-person-circle text-white fs-1"></i>
-    {% endif %}
+  main h2 {
+    color: #ffb700;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
 
-    <div>
-      <div class="fw-bold fs-5" style="color: #FFB514;">{{ full_name or username }}</div>
-      <div class="text-light mb-1">@{{ username }}</div>
+  /* Profile Header */
+  .profile-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .profile-img-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  .profile-img-wrapper img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ffb700;
+    background-color: #2d2c3a;
+  }
+  .edit-icon {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background-color: #ffb700;
+    border-radius: 50%;
+    border: 2px solid #0b0a1e;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .edit-icon:hover {
+    background-color: #cc9500;
+  }
+  .edit-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: #0b0a1e;
+  }
+  .profile-name {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-top: 0.8rem;
+  }
+  .profile-status {
+    color: #7a7a8f;
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
+  }
+  .profile-status svg {
+    width: 16px;
+    height: 16px;
+    fill: #7a7a8f;
+  }
 
-      {% if is_vip %}
-        <div class="d-flex align-items-center mb-1" style="color: #FFB514;">
-          <i class="bi bi-star-fill me-1"></i> <strong>VIP Member</strong>
-        </div>
-        <div class="text-light small">
-          Aktif sejak: {{ vip_since.strftime('%d %B %Y') if vip_since }}
-        </div>
+  /* Info box */
+  .info-box {
+    background-color: #2d2c3a;
+    border-radius: 14px;
+    border: 1px solid #5a5870;
+    padding: 1.4rem 2rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.1rem;
+    gap: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .info-item:last-child {
+    margin-bottom: 0;
+  }
+  .info-item svg {
+    width: 20px;
+    height: 20px;
+    fill: #bdbddb;
+    flex-shrink: 0;
+  }
+  .info-item strong {
+    font-weight: 700;
+    color: white;
+  }
+  .btn-edit {
+    background-color: #0d99ff;
+    border: none;
+    color: white;
+    padding: 0.35rem 1.1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-left: auto;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .btn-edit:hover {
+    background-color: #0b7ee6;
+  }
+  .btn-upgrade {
+    background-color: #ffb700;
+    border: none;
+    color: #1a1a1a;
+    padding: 0.45rem 1.6rem;
+    font-weight: 800;
+    border-radius: 24px;
+    font-size: 1rem;
+    margin-left: 1.5rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .btn-upgrade:hover {
+    background-color: #cc9500;
+    color: #151505;
+  }
+
+  /* Additional info section */
+  .additional-info {
+    border: 1px solid #5a5870;
+    border-radius: 14px;
+    padding: 1.4rem 1.8rem;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .additional-info h3 {
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+  }
+  .additional-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d0d0e1;
+    font-weight: 500;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #5a5870;
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .additional-link:last-child {
+    border-bottom: none;
+  }
+  .additional-link:hover {
+    color: #ffb700;
+  }
+  .additional-link svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Logout button */
+  .btn-logout {
+    background-color: #cf2e2e;
+    border: none;
+    color: white;
+    font-weight: 700;
+    border-radius: 24px;
+    width: 100%;
+    padding: 0.7rem 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn-logout:hover {
+    background-color: #a62626;
+  }
+
+
+  /* Responsive adjustments */
+  @media (max-width: 991px) {
+    main {
+      margin-left: 0;
+      padding: 1.5rem 1rem 3rem 1rem;
+      max-width: 100%;
+    }
+    .profile-img-wrapper img {
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+</style>
+<main>
+  <h2>Akun Saya</h2>
+
+  <div class="profile-header">
+    <div class="profile-img-wrapper" title="Edit profile picture">
+      {% if user_photo %}
+        <img src="https://images.weserv.nl/?url={{ user_photo | replace('https://', '') }}" />
       {% else %}
-        <div class="text-danger fw-semibold">Non VIP Member</div>
+        <i class="bi bi-person-circle text-white fs-1"></i>
       {% endif %}
-
-      <div class="text-light small mt-1">
-        Bergabung: {{ created_at.strftime('%d %B %Y') if created_at }}
-      </div>
+      
+      <!-- Tombol Edit dengan data-bs-target -->
+      <button class="edit-icon"
+              aria-label="Edit profile picture"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#editForm">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25Z M20.71 7.04A1.003 1.003 0 0019.29 5.62L17.37 7.54L20.12 10.29L22.04 8.37A1.003 1.003 0 0020.71 7.04Z"/>
+        </svg>
+      </button>
     </div>
+    
+    <div class="profile-name">@{{ username }}</div>
+    
+    {% if is_vip %}
+    <div class="profile-status fw-semibold" style="font-size: 1.25rem; color: #FFB514;">
+      <i class="bi bi-star-fill"></i>
+      VIP Member
+    </div>
+    <div class="text-light small ms-4">
+      Aktif sejak: {{ vip_since.strftime('%d %B %Y') if vip_since }}
+    </div>
+  {% else %}
+    <div class="profile-status text-danger fw-semibold" style="font-size: 1.25rem;">
+      <i class="bi bi-star-fill"></i>
+      Free Member
+    </div>
+  {% endif %}
+  
+  
   </div>
-
-  <!-- Tombol Edit -->
-  <button class="btn btn-outline-warning mb-3" data-bs-toggle="collapse" data-bs-target="#editForm">
-    <i class="bi bi-pencil-square me-1"></i> Edit Profil
-  </button>
-
-  <!-- Form edit profil -->
-  <div class="collapse" id="editForm">
-    <form method="post" action="/profile/update" class="p-4 rounded shadow-sm" style="background-color: #1c1c2e;">
+<!-- Form edit profil -->
+<div class="collapse" id="editForm">
+  <div class="d-flex justify-content-center"> <!-- Tambahkan wrapper flex untuk center -->
+    <form method="post" action="/profile/update"
+          class="p-4 rounded shadow-sm"
+          style="background-color: #1c1c2e; width: 100%; max-width: 500px;">
+      
       <div class="mb-3">
         <label for="username" class="form-label text-white">Username</label>
         <input type="text" class="form-control" id="username" name="username"
@@ -53,12 +263,149 @@
                value="{{ full_name }}">
       </div>
 
-
-
-
       <button type="submit" class="btn btn-warning fw-bold">
         <i class="bi bi-save me-1"></i> Simpan Perubahan
       </button>
     </form>
   </div>
-</section>
+</div>
+
+
+<!-- File: profile-box.html -->
+<div class="container py-5 d-flex justify-content-center">
+  <div class="rounded-4 border border-white overflow-hidden w-100" style="max-width: 912px;">
+    
+<!-- BAGIAN ATAS -->
+<div class="container p-0" style="max-width: 912px;">
+  <div class="row g-3 p-4" style="background-color: #302B36;">
+    
+<!-- Info Kiri -->
+<div class="col-12 col-md-8">
+  <div class="d-flex flex-column justify-content-start gap-3 text-white px-2">
+
+    <!-- Nama Lengkap -->
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+      <svg width="20" height="20" class="me-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12C14.21 12 16 10.2 16 8C16 5.8 14.21 4 12 4C9.79 4 8 5.8 8 8C8 10.2 9.79 12 12 12Z 
+        M12 14C9.33 14 4 15.33 4 18V20H20V18C20 15.33 14.67 14 12 14Z"></path>
+      </svg>
+      <span>Nama Lengkap:</span>
+      <strong>{{ full_name or username }}</strong>
+    </div>
+
+    <!-- Username -->
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+      <img src="/static/img/user-tag.png" alt="Username Icon" width="20" height="20" class="me-1">
+      <span>Username:</span>
+      <strong>@{{ username }}</strong>
+    </div>
+
+    <!-- Status Sekolah Micin -->
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+      <svg width="20" height="20" class="me-1" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z"/>
+        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z"/>
+      </svg>
+      <span class="fw-bold">Status Sekolah Micin:</span>
+      {% if user_badge_level %}
+        {% set badge_colors = {
+          "SDM": "bg-primary text-white",
+          "SMM": "bg-success text-white",
+          "SMA": "bg-warning text-dark",
+          "UMM": "bg-danger text-white"
+        } %}
+        {% set badge_icons = {
+          "SDM": "bi-book",
+          "SMM": "bi-award",
+          "SMA": "bi-mortarboard",
+          "UMM": "bi-trophy"
+        } %}
+        <span class="badge {{ badge_colors.get(user_badge_level, 'bg-secondary text-white') }} d-flex align-items-center gap-1 ms-1 mt-2 mt-md-0" style="font-weight: 600;">
+          <i class="bi {{ badge_icons.get(user_badge_level, 'bi-patch-question') }}"></i>
+          {{ user_badge_level | upper }}
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Status Member -->
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
+      <svg width="20" height="20" class="me-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 1L15.09 8.26L22.97 9.27L17.5 14.14L19.18 22.02L12 18.27
+        L4.82 22.02L6.5 14.14L1.03 9.27L8.91 8.26L12 1Z"></path>
+      </svg>
+      <span>Status Members:</span>
+      {% if is_vip %}
+        <strong class="text-warning">VIP Member</strong>
+      {% else %}
+        <strong class="text-danger">Free Member</strong>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+
+
+    <!-- Tombol kanan -->
+    <div class="col-12 col-md-4 d-flex flex-column justify-content-end align-items-md-end align-items-start gap-2">
+      <button class="btn btn-primary px-4 w-100 w-md-auto" style="border-radius: 24px;"
+        data-bs-toggle="collapse" data-bs-target="#editForm">
+        Edit Data Diri
+      </button>
+
+      <button class="btn w-100 w-md-auto"
+        style="background-color: #FFB514; border-radius: 24px; color: #030018;"
+        data-bs-toggle="modal" data-bs-target="#pilihanBayarModal">
+        Upgrade VIP Sekarang
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- BAGIAN BAWAH -->
+<div class="text-white fw-bold p-4" style="max-width: 912px; background-color: #030018; border-top: 1px solid #fff;">
+  <h5 class="mb-4">Informasi Tambahan</h5>
+
+  <a href="#" 
+  class="d-flex justify-content-between align-items-center py-2 mb-2 text-white text-decoration-none small load-partial"
+  data-url="/dashboard/partial/aktifitas">
+ <span>Lihat Riwayat Transaksi</span>
+ <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+   <path d="M9 18L15 12L9 6"></path>
+ </svg>
+</a>
+
+  <a href="#" 
+   class="d-flex justify-content-between align-items-center py-2 mb-2 text-white text-decoration-none small load-partial"
+   data-url="/dashboard/partial/ujian">
+  <span>Ujian & Ijazah</span>
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M9 18L15 12L9 6"></path>
+  </svg>
+</a>
+
+  <a href="#" class="d-flex justify-content-between align-items-center py-2 mb-2 text-white text-decoration-none small">
+    Upgrade VIP
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+      <path d="M9 18L15 12L9 6"></path>
+    </svg>
+  </a>
+</div>
+
+
+
+  </div>
+</div>
+
+<div class="container p-0 mt-3 mb-3" style="max-width: 912px;">
+  <a href="/logout" class="btn btn-logout w-100" aria-label="Logout from account">
+    Logout
+  </a>
+  
+</div>
+
+
+
+</main>

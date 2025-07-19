@@ -5,15 +5,19 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from config import supabase, MIDTRANS_CLIENT_KEY
 from backend.utils.auth_helper import require_login
 from backend.services.midtrans import create_snap_transaction, is_valid_signature
-from backend.services.telegram_notify import send_telegram_notify
+from backend.services.telegram_notify import send_telegram_notify,send_telegram_notify_manual
 from datetime import datetime
 import uuid
 from fastapi import Form
 import logging
 import os
-from config import BASE_URL 
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
+from config import BASE_URL, MIDTRANS_CLIENT_KEY, MIDTRANS_SNAP_URL
+from fastapi import BackgroundTasks  # pastikan sudah di-import
+from backend.services.email_notify import send_email_notify_manual  # pastikan juga ini di-import
+
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="frontend")
@@ -68,7 +72,59 @@ async def bayar_vip(request: Request, telegram_id: str = Depends(require_login))
         "request": request,
         "snap_token": snap_token,
         "client_key": MIDTRANS_CLIENT_KEY,
-        "gross_amount": gross_amount 
+        "gross_amount": gross_amount,
+        "snap_url": MIDTRANS_SNAP_URL, 
+    })
+
+# ===============================
+# BAYAR VIP TANPA LOGIN (MANUAL)
+# ===============================
+@router.post("/bayar/vip/manual", response_class=HTMLResponse)
+async def bayar_vip_manual(
+    request: Request,
+    background_tasks: BackgroundTasks,  # ← WAJIB supaya bisa kirim email
+    username: str = Form(...),
+    fullname: str = Form(...),
+    email: str = Form(...)
+):
+    order_id = f"VIPWEB-{uuid.uuid4().hex[:10].upper()}"
+    gross_amount = await get_setting_price("vip_price")
+
+    item_details = [{
+        "id": "vip",
+        "price": gross_amount,
+        "quantity": 1,
+        "name": "Membership VIP Micin"
+    }]
+
+    customer = {
+        "first_name": fullname or username,
+        "email": email
+    }
+
+    snap_token = create_snap_transaction(order_id, gross_amount, item_details, customer)
+
+    # Simpan ke Supabase
+    supabase.table("Transactions").insert({
+        "order_id": order_id,
+        "user_id": None,
+        "username": username,
+        "full_name": fullname,
+        "email": email,
+        "gross_amount": gross_amount,
+        "transaction_status": "pending",
+        "transaction_time": datetime.utcnow().replace(microsecond=0).isoformat()
+    }).execute()
+
+    # Kirim email konfirmasi (async)
+    background_tasks.add_task(send_email_notify_manual, email, username)
+
+    return templates.TemplateResponse("user/bayar_vip.html", {
+        "request": request,
+        "snap_token": snap_token,
+        "client_key": MIDTRANS_CLIENT_KEY,
+        "gross_amount": gross_amount,
+        "snap_url": MIDTRANS_SNAP_URL,
     })
 
 
@@ -123,7 +179,8 @@ async def bayar_sma(request: Request, telegram_id: str = Depends(require_login))
         "request": request,
         "snap_token": snap_token,
         "client_key": MIDTRANS_CLIENT_KEY,
-        "gross_amount": gross_amount  # ✅ kirim harga ke template
+        "gross_amount": gross_amount,
+        "snap_url": MIDTRANS_SNAP_URL,
     })
 
 # ===============================
@@ -144,6 +201,7 @@ async def bayar_umm(request: Request, telegram_id: str = Depends(require_login))
             "request": request,
             "snap_token": None,
             "client_key": MIDTRANS_CLIENT_KEY,
+            "snap_url": MIDTRANS_SNAP_URL,
             "pesan": "Kamu harus membeli Addon SMA terlebih dahulu sebelum bisa membeli Addon UMM."
         })
 
@@ -177,12 +235,13 @@ async def bayar_umm(request: Request, telegram_id: str = Depends(require_login))
         "request": request,
         "snap_token": snap_token,
         "client_key": MIDTRANS_CLIENT_KEY,
-        "gross_amount": gross_amount  # ✅ Kirim ke template
+        "gross_amount": gross_amount,
+        "snap_url": MIDTRANS_SNAP_URL
     })
 
 
 # ===============================
-# BAYAR UMM SOLANA (POST)
+# BAYAR SOLANA (POST)
 # ===============================
 @router.post("/bayar/solana")
 async def bayar_solana(request: Request, telegram_id: str = Depends(require_login)):
@@ -232,6 +291,10 @@ async def bayar_solana(request: Request, telegram_id: str = Depends(require_logi
 
 
 
+
+# ===============================
+# WEBHOOK MIDTRANS
+# ===============================
 @router.post("/webhook/midtrans")
 async def midtrans_webhook(request: Request, background_tasks: BackgroundTasks):
     data = await request.json()
@@ -241,6 +304,7 @@ async def midtrans_webhook(request: Request, background_tasks: BackgroundTasks):
     gross_amount = data.get("gross_amount")
     signature_key = data.get("signature_key")
 
+    # Filter hanya order yang valid
     if not order_id or not (
         order_id.startswith("VIPWEB-") or 
         order_id.startswith("SMAADD-") or 
@@ -249,10 +313,11 @@ async def midtrans_webhook(request: Request, background_tasks: BackgroundTasks):
     ):
         return JSONResponse({"status": "skipped"}, status_code=200)
 
+    # Cek validitas signature Midtrans
     if not is_valid_signature(order_id, status_code, gross_amount, signature_key):
         return JSONResponse({"error": "Invalid signature"}, status_code=403)
 
-    # Update data transaksi
+    # Update status transaksi
     supabase.table("Transactions").update({
         "transaction_status": data.get("transaction_status"),
         "transaction_id": data.get("transaction_id"),
@@ -266,36 +331,47 @@ async def midtrans_webhook(request: Request, background_tasks: BackgroundTasks):
         "merchant_id": data.get("merchant_id")
     }).eq("order_id", order_id).execute()
 
-    # Kalau sukses bayar
+    # Kalau transaksi berhasil
     if data.get("transaction_status") == "settlement":
-        trans_res = supabase.table("Transactions").select("user_id, username").eq("order_id", order_id).single().execute()
+        trans_res = supabase.table("Transactions") \
+            .select("user_id, username, email") \
+            .eq("order_id", order_id).single().execute()
+
         if not trans_res.data:
             return JSONResponse({"error": "Transaksi tidak ditemukan"}, status_code=404)
 
         user_id = trans_res.data.get("user_id")
         username = trans_res.data.get("username")
+        email = trans_res.data.get("email")
         now_date = datetime.utcnow().strftime("%Y-%m-%d")
 
         if order_id.startswith("VIPWEB-"):
-            supabase.table("Users").update({
-                "is_vip": True,
-                "vip_since": now_date
-            }).eq("user_id", user_id).execute()
             if user_id:
+                # Update keanggotaan VIP
+                supabase.table("Users").update({
+                    "is_vip": True,
+                    "vip_since": now_date
+                }).eq("user_id", user_id).execute()
                 background_tasks.add_task(send_telegram_notify, user_id, "vip")
+            else:
+                # Manual user (tidak login)
+                background_tasks.add_task(send_telegram_notify_manual, username, email)
+
+                if email:
+                    background_tasks.add_task(send_email_notify_manual, email, username)
 
         elif order_id.startswith("SMAADD-"):
-            supabase.table("Users").update({
-                "is_sma_addon": True
-            }).eq("user_id", user_id).execute()
             if user_id:
+                supabase.table("Users").update({
+                    "is_sma_addon": True
+                }).eq("user_id", user_id).execute()
                 background_tasks.add_task(send_telegram_notify, user_id, "sma_addon")
 
         elif order_id.startswith("UMMWEB-"):
-            supabase.table("Users").update({
-                "is_umm": True
-            }).eq("user_id", user_id).execute()
             if user_id:
+                supabase.table("Users").update({
+                    "is_umm": True
+                }).eq("user_id", user_id).execute()
                 background_tasks.add_task(send_telegram_notify, user_id, "umm_addon")
 
         elif order_id.startswith("SOLWEB-"):

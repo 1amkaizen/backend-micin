@@ -1,55 +1,209 @@
-{# File: frontend/user/dashboard/partials/download.html #}
-<div class="content-wrapper px-3 py-4" style="background-color: #030018; min-height: 100vh; color: white;">
-  <h3 class="section-title mb-4">📄 Download Sertifikat</h3>
+<style>
+/* Custom Tabs Style */
+.custom-tabs .nav-link {
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: all 0.3s ease;
+}
 
-  {% if summary.ujian %}
-    {% set list = summary.ujian.items() | selectattr("1.sertifikat_url") | list %}
+.custom-tabs .nav-link:hover {
+    color: #ffd455;
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 6px rgba(255, 181, 20, 0.4);
+}
 
-    {% if list %}
-      <div class="row g-4">
-        {% for level, info in list %}
-        <div class="col-12 col-sm-6 col-md-4">
-          <div class="card bg-dark text-white shadow-sm h-100 border-0" style="border-radius: 16px;">
-            <div class="card-body d-flex flex-column justify-content-between">
-        
-              <div>
-                <span class="badge bg-success mb-2" style="width: fit-content;">✅ Telah Lulus</span>
-                <h5 class="card-title mb-2">Level {{ level }}</h5>
-                <p class="mb-3">Skor: <strong>{{ info.score }}</strong></p>
-        
-                <iframe src="{{ info.sertifikat_url }}#toolbar=0&navpanes=0&scrollbar=0"
-                        style="width: 100%; height: 200px; border-radius: 12px; border: 1px solid #444;"
-                        class="mb-3"
-                ></iframe>
+.custom-tabs .nav-link.active {
+    color: #ffb514;
+    border-bottom: 2px solid #ffb514;
+    background-color: rgba(255, 181, 20, 0.1);
+    box-shadow: 0 0 10px rgba(255, 181, 20, 0.5);
+}
+
+  /* Content area */
+  .content-section {
+      padding: 2rem 1rem 3rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+  }
+  .content-section h2 {
+      color: #ffb600;
+      font-weight: 700;
+      margin-bottom: 1rem;
+  }
+  .content-section p.description {
+      max-width: 760px;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      color: #ddd;
+      margin-bottom: 2rem;
+  }
+
+  /* Cards styles */
+  .download-card {
+      background: linear-gradient(135deg, #222138 0%, #2c2a3e 100%);
+      border: 1px solid #ffb600;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+  }
+  .download-card:hover {
+      box-shadow: 0 0 15px 3px rgba(255, 182, 0, 0.6);
+      transform: translateY(-6px);
+  }
+  .download-card img {
+      border-radius: 1rem;
+      object-fit: contain;
+      height: 160px;
+      width: 100%;
+      margin-bottom: 1rem;
+      background-color: #1e1b2c;
+  }
+  .download-card .title {
+      font-weight: 700;
+      color: #eee;
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+      white-space: nowrap; 
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+  .download-card .subtitle {
+      font-size: 0.85rem;
+      color: #ffb600;
+      margin-bottom: 1rem;
+  }
+  .btn-download {
+      margin-top: auto;
+      background-color: #ffb600;
+      border: none;
+      color: #0d0c1a;
+      font-weight: 700;
+      border-radius: 30px;
+      padding: 0.4rem 1.2rem;
+      letter-spacing: 0.03em;
+      transition: background-color 0.2s ease;
+  }
+  .btn-download:hover, .btn-download:focus {
+      background-color: #cc9600;
+      color: #fff;
+      text-decoration: none;
+  }
+  /* Scrollbar for sidebar if needed */
+  #sidebar {
+      overflow-y: auto;
+  }
+  /* Responsive align for smaller devices */
+  @media (max-width: 991.98px) {
+      #sidebar {
+          min-height: auto;
+          height: auto;
+      }
+  }
+</style>
+
+
+  <section class="content-section flex-grow-1">
+      <h2>Semua resource penting komunitas micin — satu tempat, tinggal download!</h2>
+      <p class="description">
+        Di sini kamu bisa akses berbagai file edukasi, tools, dan template yang dirancang khusus untuk bantu perjalananmu dari pemula sampai jadi degen profesional.
+      </p>
+
+      <ul class="nav nav-tabs custom-tabs" id="downloadTabs" role="tablist">
+        <!-- Tab Sertifikat selalu tampil pertama dan aktif -->
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active"
+                  id="tab-sertifikat" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#content-sertifikat" 
+                  type="button" role="tab">
+            Sertifikat
+          </button>
+        </li>
+      
+        {% for tipe in tipe_list %}
+          <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="tab-{{ loop.index }}" 
+                    data-bs-toggle="tab" 
+                    data-bs-target="#content-{{ loop.index }}" 
+                    type="button" role="tab">
+              {{ tipe }}
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+      
+      
+      <div class="row g-4 border border-warning rounded p-3 mt-5">
+        <div class="tab-content mt-4">
+          <!-- Tab Sertifikat aktif -->
+          <div class="tab-pane fade show active" id="content-sertifikat" role="tabpanel">
+            {% if summary.ujian %}
+              {% set list = summary.ujian.items() | selectattr("1.sertifikat_url") | list %}
+              {% if list %}
+                <div class="row g-4">
+                  {% for level, info in list %}
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="download-card">
+                      <iframe src="{{ info.sertifikat_url }}#toolbar=0&navpanes=0&scrollbar=0"
+                              style="width: 100%; height: 160px; border-radius: 1rem; background-color: #1e1b2c;"
+                              onerror="this.onerror=null;this.style.display='none';"
+                      ></iframe>
+                      <div class="title mt-3">Level {{ level }}</div>
+                      <div class="subtitle">Skor: {{ info.score }}</div>
+                      <a href="{{ info.sertifikat_url }}" class="btn btn-download mt-3" target="_blank">
+                        🎓 Download Sertifikat
+                      </a>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="alert alert-info mt-4 text-white">
+                  Kamu belum lulus ujian apapun.
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="alert alert-warning mt-4 text-white">
+                Data sertifikat belum tersedia. Silakan muat ulang halaman.
               </div>
-        
-              <a href="{{ info.sertifikat_url }}" target="_blank"
-                 class="btn mt-auto fw-bold"
-                 style="
-                   background-color: #FFB514;
-                   color: #030018;
-                   border-radius: 12px;
-                   transition: all 0.3s ease;
-                 "
-                 onmouseover="this.style.opacity='0.85'"
-                 onmouseout="this.style.opacity='1'"
-              >
-                🎓 Download Sertifikat
-              </a>
-            </div>
+            {% endif %}
           </div>
+        
+          <!-- Tab lain (non aktif) -->
+          {% for tipe in tipe_list %}
+            <div class="tab-pane fade" id="content-{{ loop.index }}" role="tabpanel">
+              <div class="row">
+                {% for item in grouped_files[tipe] %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                  <div class="download-card">
+                    <img src="{{ item.banner_url or '/static/img/default-banner.png' }}" alt="{{ item.title }}"
+                        onerror="this.onerror=null;this.src='/static/img/default-banner.png';">
+                    <div class="title" title="{{ item.title }}">
+                      {{ item.title[:20] ~ ("..." if item.title|length > 20 else "") }}
+                    </div>
+                    <div class="subtitle">{{ item.description or '-' }}</div>
+                    <a href="{{ item.file_url }}" class="btn btn-download" target="_blank">Download</a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
         </div>
         
-        {% endfor %}
+        
+        
+      
       </div>
-    {% else %}
-      <div class="alert alert-info mt-4">
-        Kamu belum memiliki sertifikat yang bisa diunduh.
-      </div>
-    {% endif %}
-  {% else %}
-    <div class="alert alert-warning mt-4">
-      Data sertifikat belum tersedia. Silakan muat ulang halaman.
-    </div>
-  {% endif %}
-</div>
+    </section>

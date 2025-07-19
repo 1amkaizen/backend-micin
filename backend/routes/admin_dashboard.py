@@ -10,17 +10,21 @@ from config import supabase
 from backend.routes.admin_exam import get_all_exams
 from backend.utils.payment_helper import get_all_transactions
 from datetime import datetime,timedelta
+from fastapi import UploadFile, File
+import shutil
+import os
+import uuid
 router = APIRouter()
 templates = Jinja2Templates(directory="frontend")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+from collections import defaultdict
+from backend.utils.time_helper import safe_parse_date
 
 
 # ===============================
 # DASHBOARD UTAMA 
 # ===============================
-from collections import defaultdict
-from backend.utils.time_helper import safe_parse_date
-
 
 @router.get("/admin/dashboard", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
@@ -53,6 +57,10 @@ async def admin_dashboard(request: Request):
     growth_prev = bulan_counter.get(prev_month, 1) or 1  # hindari divide by zero
     user_growth_percent = round((growth_now - growth_prev) / growth_prev * 100, 2)
 
+    # Ambil URL banner dari Settings
+    banner = supabase.table("Settings").select("value").eq("key", "dashboard_banner").execute()
+    dashboard_banner_url = banner.data[0]["value"] if banner.data else None
+
     return templates.TemplateResponse("admin/dashboard.html", {
         "request": request,
         "admin_email": admin["email"],
@@ -69,6 +77,7 @@ async def admin_dashboard(request: Request):
         "growth_modul": "+0%",
         "anggota_growth_data": anggota_growth_data,
         "user_growth_percent": user_growth_percent,
+        "dashboard_banner_url": dashboard_banner_url  # ⬅️ penting ini
     })
 
 # ===============================
@@ -312,6 +321,278 @@ async def update_harga(request: Request, data: dict = Body(...)):
         }).eq("id", ecer_id).execute()
 
     return {"message": "Harga berhasil diperbarui"}
+
+
+# ===============================
+# KELOLA BANNER (POST)
+# ===============================
+
+@router.post("/admin/dashboard/kelola-banner")
+async def upload_banner(
+    request: Request,
+    file: UploadFile = File(...)
+):
+    admin = await require_admin(request)
+
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_banner"):
+            raise HTTPException(status_code=403, detail="Tidak punya akses.")
+
+    ext = file.filename.split('.')[-1].lower()
+    if ext not in ["jpg", "jpeg", "png", "webp"]:
+        raise HTTPException(status_code=400, detail="File harus berupa gambar (jpg/png/webp)")
+
+    # Generate nama file unik
+    filename = f"dashboard-banner/{uuid.uuid4()}.{ext}"
+    content = await file.read()
+
+    try:
+        supabase.storage.from_("banner-images").upload(
+            path=filename,
+            file=content,
+            file_options={"content-type": file.content_type}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gagal upload banner: {str(e)}")
+
+    # Ambil public URL dari Supabase
+    public_url = supabase.storage.from_("banner-images").get_public_url(filename)
+
+    # Simpan ke tabel Settings
+    supabase.table("Settings").upsert({
+        "key": "dashboard_banner",
+        "value": public_url
+    }, on_conflict=["key"]).execute()
+
+    return RedirectResponse(url="/admin/dashboard/kelola-banner", status_code=303)
+
+# ===============================
+# KELOLA BANNER (GET)
+# ===============================
+@router.get("/admin/dashboard/kelola-banner", response_class=HTMLResponse)
+async def kelola_banner_page(request: Request):
+    admin = await require_admin(request)
+
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_banner"):
+            return templates.TemplateResponse("admin/no_access.html", {
+                "request": request,
+                "message": "Kamu tidak punya akses ke halaman Kelola Banner."
+            })
+
+    # Ambil URL banner dari Settings
+    result = supabase.table("Settings").select("value").eq("key", "dashboard_banner").execute()
+    banner_url = result.data[0]["value"] if result.data else None
+
+    return templates.TemplateResponse("admin/kelola_banner.html", {
+        "request": request,
+        "admin_email": admin["email"],
+        "is_superadmin": admin["role"] == "superadmin",
+        "banner_url": banner_url
+    })
+
+
+# ===============================
+# HALAMAN KELOLA DOWNLOAD (GET)
+# ===============================
+@router.get("/admin/dashboard/kelola-download", response_class=HTMLResponse)
+async def kelola_download_page(request: Request):
+    admin = await require_admin(request)
+
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_download"):
+            return templates.TemplateResponse("admin/no_access.html", {
+                "request": request,
+                "message": "Kamu tidak punya akses ke halaman Kelola Download."
+            })
+
+    result = supabase.table("Downloads").select("*").order("created_at", desc=True).execute()
+    downloads = result.data or []
+
+    return templates.TemplateResponse("admin/kelola_download.html", {
+        "request": request,
+        "admin_email": admin["email"],
+        "downloads": downloads
+    })
+
+
+# ===============================
+# SUBMIT FORM DOWNLOAD (POST)
+# ===============================
+@router.post("/admin/dashboard/kelola-download")
+async def upload_download_file(
+    request: Request,
+    title: str = Form(...),
+    description: str = Form(...),
+    file_type: str = Form(...),
+    file: UploadFile = File(...),
+    banner: UploadFile = File(None)
+):
+    admin = await require_admin(request)
+
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_download"):
+            raise HTTPException(status_code=403, detail="Tidak punya akses.")
+    # ===============================
+    # Validasi file_type
+    # ===============================
+    VALID_FILE_TYPES = [
+        "materi belajar",
+        "ijazah micin",
+        "template trading",
+        "tools & preset",
+        "analisa & strategi",
+        "dokumen komunitas",
+        "link external"
+    ]
+
+    if file_type.lower() not in VALID_FILE_TYPES:
+        result = supabase.table("Downloads").select("*").order("created_at", desc=True).execute()
+        downloads = result.data or []
+        return templates.TemplateResponse("admin/kelola_download.html", {
+            "request": request,
+            "admin_email": admin["email"],
+            "downloads": downloads,
+            "error": "Tipe file tidak valid. Harap pilih dari dropdown yang tersedia."
+        })
+
+    # ===============================
+    # Upload FILE ke bucket downloads
+    # ===============================
+    ext = file.filename.split('.')[-1]
+    file_path = f"{uuid.uuid4()}.{ext}"
+    file_content = await file.read()
+
+    try:
+        supabase.storage.from_("downloads").upload(
+            path=file_path,
+            file=file_content,
+            file_options={"content-type": file.content_type}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gagal upload file: {str(e)}")
+
+    file_url = supabase.storage.from_("downloads").get_public_url(file_path)
+
+    # ===============================
+    # Upload BANNER ke bucket download-banners
+    # ===============================
+    banner_url = None
+    if banner:
+        ext_b = banner.filename.split('.')[-1]
+        banner_path = f"{uuid.uuid4()}.{ext_b}"
+        banner_content = await banner.read()
+
+        try:
+            supabase.storage.from_("download-banners").upload(
+                path=banner_path,
+                file=banner_content,
+                file_options={"content-type": banner.content_type}
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Gagal upload banner: {str(e)}")
+
+        banner_url = supabase.storage.from_("download-banners").get_public_url(banner_path)
+
+    # ===============================
+    # Simpan data ke tabel Downloads
+    # ===============================
+    supabase.table("Downloads").insert({
+        "title": title,
+        "description": description,
+        "file_type": file_type,
+        "file_url": file_url,
+        "banner_url": banner_url,
+        "uploaded_by": admin["email"]
+    }).execute()
+
+    return RedirectResponse(url="/admin/dashboard/kelola-download", status_code=303)
+
+# ===============================
+# EDIT FILE (POST)
+# ===============================
+@router.post("/admin/dashboard/kelola-download/edit/{download_id}")
+async def submit_edit_download(
+    request: Request,
+    download_id: str,
+    title: str = Form(...),
+    description: str = Form(...),
+    file_type: str = Form(...),
+    file: UploadFile = File(None),
+    banner: UploadFile = File(None)
+):
+    admin = await require_admin(request)
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_download"):
+            raise HTTPException(status_code=403, detail="Tidak punya akses.")
+        
+    update_data = {
+        "title": title,
+        "description": description,
+        "file_type": file_type,
+    }
+
+    # ========== Ganti file utama jika ada ==========
+    if file:
+        ext = file.filename.split('.')[-1]
+        file_path = f"{uuid.uuid4()}.{ext}"
+        file_content = await file.read()
+
+        try:
+            supabase.storage.from_("downloads").upload(
+                path=file_path,
+                file=file_content,
+                file_options={"content-type": file.content_type}
+            )
+            file_url = supabase.storage.from_("downloads").get_public_url(file_path)
+            update_data["file_url"] = file_url
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Gagal upload file: {str(e)}")
+
+    # ========== Ganti banner jika ada ==========
+    if banner:
+        ext_b = banner.filename.split('.')[-1]
+        banner_path = f"{uuid.uuid4()}.{ext_b}"
+        banner_content = await banner.read()
+
+        try:
+            supabase.storage.from_("download-banners").upload(
+                path=banner_path,
+                file=banner_content,
+                file_options={"content-type": banner.content_type}
+            )
+            banner_url = supabase.storage.from_("download-banners").get_public_url(banner_path)
+            update_data["banner_url"] = banner_url
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Gagal upload banner: {str(e)}")
+
+    # ========== Simpan ke DB ==========
+    supabase.table("Downloads").update(update_data).eq("id", download_id).execute()
+
+    return RedirectResponse(url="/admin/dashboard/kelola-download", status_code=303)
+
+
+# ===============================
+# HAPUS FILE (POST)
+# ===============================
+@router.post("/admin/dashboard/kelola-download/delete/{download_id}")
+async def delete_download_file(request: Request, download_id: str):
+    admin = await require_admin(request)
+
+    if admin["role"] != "superadmin":
+        permissions = admin.get("permissions") or {}
+        if not permissions.get("can_manage_download"):
+            raise HTTPException(status_code=403, detail="Tidak punya akses.")
+
+    # Hapus file dari database
+    supabase.table("Downloads").delete().eq("id", download_id).execute()
+
+    return RedirectResponse(url="/admin/dashboard/kelola-download", status_code=303)
 
 
 

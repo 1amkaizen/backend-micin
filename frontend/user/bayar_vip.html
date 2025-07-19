@@ -19,7 +19,7 @@
   </div>
 </section>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ client_key }}"></script>
+<script src="{{ snap_url }}" data-client-key="{{ client_key }}"></script>
 <script>
   function pay() {
     window.snap.pay("{{ snap_token }}", {

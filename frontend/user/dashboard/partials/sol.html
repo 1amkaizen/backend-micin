@@ -1,64 +1,243 @@
+<style>
+  .btn-yellow {
+      background-color: #fbbc04;
+      border: none;
+      font-weight: 700;
+      color: #1a1a1a;
+      transition: background-color 0.3s ease;
+    }
+    .btn-yellow:hover, .btn-yellow:focus {
+      background-color: #d6a504;
+      color: #1a1a1a;
+    }
+    .btn-blue {
+      background-color: #1e90ff;
+      border: none;
+      font-weight: 700;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    .btn-blue:hover, .btn-blue:focus {
+      background-color: #1277e3;
+      color: white;
+    }
+    .btn-telegram {
+      background-color: #fbbc04;
+      color: #1a1a1a;
+      font-weight: 600;
+      border-radius: 1.25rem;
+      padding: 0.375rem 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      margin-top: 0.75rem;
+      user-select: none;
+    }
+    .btn-telegram:hover, .btn-telegram:focus {
+      background-color: #d6a504;
+      color: #1a1a1a;
+    }
+    .btn-telegram svg {
+      width: 20px;
+      height: 20px;
+      fill: #1a1a1a;
+    }
+    .nominal-btn {
+      border-radius: 1rem;
+      border: 1.5px solid #c9c9d8;
+      color: #c9c9d8;
+      font-weight: 600;
+      padding: 0.35rem 1.15rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.25s ease;
+      background-color: transparent;
+      min-width: 110px;
+      text-align: center;
+    }
+    .nominal-btn.active {
+      background-color: #593f87;
+      color: #fbbc04;
+      border-color: #593f87;
+    }
+    .nominal-btn:not(.active):hover {
+      background-color: #272449;
+    }
+
+    .form-control, .form-control:focus {
+      background-color: transparent;
+      border-color: #c9c9d8;
+      color: #f5f5f5;
+      border-radius: 0.5rem;
+      box-shadow: none;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .form-control::placeholder {
+      color: #aaa9b3;
+      font-weight: 400;
+    }
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #f5f5f5;
+    }
+</style>
+
+
 <!-- File: frontend/user/dashboard/partials/sol.html -->
 <section class="container py-5">
-  <div class="text-center mb-5">
-    <h1 class="fw-bold" style="font-size: 40px; color: #FFB514;">Beli Solana Eceran</h1>
+  <div class=" mb-5">
+    <h1 class="fw-bold" style="font-size: 30px; color: #FFB514;">Beli Solana (SOL) Eceran</h1>
 
-    <p class="text-white fs-5">
-      Beli Solana dengan mudah langsung dari website kami.
+    <p class="text-white" style="font-size: 14px;">
+      Pilih nominal Solana yang ingin dibeli. Pembayaran dapat dilakukan langsung melalui OVO, DANA, atau QRIS, atau melalui Bot Telegram kami.
     </p>
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow-lg border-0" style="background-color: #1a1a3d; border-radius: 16px;">
-        <div class="card-body text-white">
+    <div class="col-md-8" style="border: 2px solid #FFB514; border-radius: 16px;">
 
-          <p class="mb-4"><strong>📘 Panduan:</strong></p>
-          <ul class="list-unstyled text-white fs-6" style="line-height: 1.6;">
-            <li>➡️ Isi <strong>nama lengkap</strong> dan <strong>wallet Solana</strong> kamu.</li>
-            <li>➡️ Pilih nominal pembelian yang kamu inginkan.</li>
-            <li>➡️ Pembayaran dilakukan via <strong>Midtrans</strong>.</li>
-            <li>➡️ Solana akan dikirim manual oleh admin setelah pembayaran diterima.</li>
-          </ul>
-          
-          
+      <div class="card shadow-lg border-0" style="background-color: #030018; border-radius: 16px;">
+        <div class="card-body text-white px-4 px-md-5">
 
           <form id="solanaForm" onsubmit="return false;">
-            <div class="mb-3">
-              <label class="form-label">Nama Lengkap</label>
-              <input type="text" name="full_name" class="form-control" required />
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">Wallet Solana</label>
-              <input type="text" name="wallet" class="form-control" required />
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">Nominal Pembelian</label>
-              <div class="d-flex flex-wrap gap-2">
-                {% for item in ecer_prices %}
-                  <input type="radio" class="btn-check" name="nominal" id="nom{{ item.price }}" value="{{ item.price }}" required />
-                  <label class="btn btn-outline-warning fw-bold" for="nom{{ item.price }}">
-                    Rp {{ "{:,.0f}".format(item.price).replace(",", ".") }}
-                  </label>
-                {% endfor %}
-              </div>
-            </div>
+<div class="mb-3 mt-4">
+  <label class="form-label">Pilih Nominal</label>
+  <div class="d-flex flex-wrap gap-2">
+    {% for item in ecer_prices %}
+      <input type="radio" class="btn-check nominal-btn" name="nominal" id="nom{{ item.price }}" value="{{ item.price }}" required />
+      <label
+        class="btn fw-bold d-flex align-items-center justify-content-center"
+        for="nom{{ item.price }}"
+        id="label-nom{{ item.price }}"
+        style="
+          color: #ffffff;
+          border: 1px solid #ffffff;
+          transition: all 0.2s ease-in-out;
+          min-width: 140px;
+          gap: 6px;
+        "
+        onmouseover="this.style.backgroundColor='#3F2C52'; this.style.color='#FFB514';"
+        onmouseout="
+          if (!document.getElementById('nom{{ item.price }}').checked) {
+            this.style.backgroundColor='';
+            this.style.color='#ffffff';
+            this.querySelector('.checkmark').style.visibility = 'hidden';
+          }
+        "
+        onclick="
+          document.querySelectorAll('.nominal-btn').forEach((el) => {
+            const lbl = document.getElementById('label-' + el.id);
+            lbl.style.backgroundColor = '';
+            lbl.style.color = '#ffffff';
+            lbl.querySelector('.checkmark').style.visibility = 'hidden';
+          });
+          this.style.backgroundColor = '#3F2C52';
+          this.style.color = '#FFB514';
+          this.querySelector('.checkmark').style.visibility = 'visible';
+        "
+      >
+        <i class="bi bi-check-circle checkmark" style="visibility: hidden; color: #FFB514;"></i>
+        Rp {{ (item.price // 1000)|int }}k
+      </label>
+    {% endfor %}
+  </div>
+</div>
+
             
 
-            <div class="d-grid">
-              <button type="submit" class="btn fw-bold" style="background-color: #FFB514; color: black;">
-                <i class="bi bi-credit-card me-1"></i> Bayar Sekarang
-              </button>
+            <div class="mb-3 mt-4">
+              <label class="form-label">Nama</label>
+              <input type="text" name="full_name" class="form-control"
+                style="background-color: transparent; color: white; border: 1px solid #ccc;"
+                placeholder="Nama Anda" required />
             </div>
-            <div class="text-center mt-3">
-              <a href="https://t.me/prossultan" target="_blank" class="btn btn-sm btn-outline-light">
-                <i class="bi bi-telegram me-1"></i> Hubungi Admin di Telegram
-              </a>
-            </div>
-          </form>
+          
+            <div class="mb-3 mt-3">
+              <label class="form-label">Wallet Solana</label>
+              <input type="text" name="wallet" class="form-control"
+                style="background-color: transparent; color: white; border: 1px solid #ccc;"
+                placeholder="Alamat Wallet Solana (Phantom/Solflare)" required />
 
+            </div>
+          
+            <div class="d-flex flex-wrap gap-3 justify-content-center mb-3 mt-5">
+              <button type="submit"
+                style="
+                  background-color: #FFB514;
+                  color: #1a1a1a;
+                  font-weight: 600;
+                  border-radius: 20px;
+                  padding: 0 16px;
+                  height: 40px;
+                  min-width: 160px;
+                  border: none;
+                  flex-grow: 1;
+                  flex-grow: 1;
+                  flex-shrink: 0;
+                ">
+                Bayar Sekarang
+              </button>
+            
+              <a href="https://t.me/micindotidbot" target="_blank" 
+              style="
+                background-color: #0A80ED;
+                color: white;
+                font-weight: 600;
+                border-radius: 20px;
+                padding: 0 16px;
+                height: 40px;
+                min-width: 160px;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                flex-grow: 1;
+                flex-shrink: 0;
+              ">
+             Beli Lewat Bot
+           </a>
+           
+            </div>
+            
+          </form>
+          <div class="text-center mt-3 mb-3" style="font-size: 0.875rem; color: #cccccc; font-weight: 500;">
+            <p>
+              Transaksi otomatis,<br />
+              Jika dalam 15 menit belum masuk, silahkan hubungi admin.<br />
+              Pastikan alamat wallet valid!
+            </p>
+          
+            <a href="https://t.me/prossultan" target="_blank"
+            class="mx-auto mt-3 mb-3"
+            style="
+              background-color: #FFB514;
+              color: #1a1a1a;
+              font-weight: 600;
+              border-radius: 20px;
+              padding: 0px 16px;
+              height: 40px;
+              min-width: 84px;
+              max-width: 480px;
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              border: none;
+              text-decoration: none;
+            ">
+            <i class="bi bi-chat-dots-fill" style="font-size: 18px; color: white;"></i>
+            Hubungi Admin via Telegram
+          </a>
+          
+          
+            <div class="footer-highlight mt-2" style="color: #FFB514;">SOL kamu sedang dikirim ke wallet!</div>
+          </div>
+          
         </div>
       </div>
     </div>

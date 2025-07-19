@@ -1,9 +1,12 @@
-  <!-- Banner full width -->
-  <section class="my-4">
-    <div class="w-100 overflow-hidden">
-      <img src="/static/img/banner_dashboard.png"
-           alt="Banner"
-           class="w-100"
-           style="object-fit: contain;" />
-    </div>
-  </section>
+{# frontend/admin/partials/hero.html #}
+<!-- Banner full width -->
+{% if dashboard_banner_url %}
+<section class="my-4">
+  <div class="w-100 overflow-hidden">
+    <img src="{{ dashboard_banner_url }}"
+         alt="Banner"
+         class="w-100"
+         style="object-fit: contain;" />
+  </div>
+</section>
+{% endif %}

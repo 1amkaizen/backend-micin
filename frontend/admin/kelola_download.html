@@ -1,0 +1,143 @@
+{% extends "admin/base_admin.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-warning">Kelola File Download</h2>
+  <p class="text-light">Selamat datang di Halaman Kelola Unduhan! Di sini Anda dapat mengunggah dan mengelola berbagai berkas penting yang akan ditampilkan kepada pengguna. Anda bisa menambahkan modul belajar, template, dokumen komunitas, hingga sertifikat, lengkap dengan deskripsi, banner, dan tipe file sesuai kategori. Pastikan setiap file yang diunggah sudah sesuai dan informatif untuk mendukung kebutuhan komunitas pengguna..</p>
+
+  <!-- Form Upload -->
+  <form method="post" action="/admin/dashboard/kelola-download" enctype="multipart/form-data" class="bg-dark p-4 rounded border border-warning mb-5">
+    <div class="mb-3">
+      <label class="form-label text-light">Judul File</label>
+      <input type="text" name="title" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label text-light">Deskripsi</label>
+      <textarea name="description" class="form-control" rows="3" required></textarea>
+    </div>
+
+
+<div class="mb-3">
+  <label class="form-label text-light">Tipe File</label>
+  <select name="file_type" class="form-select" required>
+    <option value="materi belajar">Materi Belajar</option>
+    <option value="template trading">Template Trading</option>
+    <option value="tools & preset">Tools & Preset</option>
+    <option value="analisa & strategi">Analisa & Strategi</option>
+    <option value="dokumen komunitas">Dokumen Komunitas</option>
+    <option value="link external">Link External</option>
+  </select>
+</div>
+
+
+    <div class="mb-3">
+      <label class="form-label text-light">File Utama (PDF/ZIP/PPT)</label>
+      <input type="file" name="file" class="form-control" accept=".pdf,.zip,.ppt,.pptx,.docx" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label text-light">Banner (opsional)</label>
+      <input type="file" name="banner" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+    </div>
+
+    <button type="submit" class="btn btn-warning fw-bold">Upload</button>
+  </form>
+
+  <!-- List File Yang Sudah Diupload -->
+  <h5 class="text-light mb-3">Daftar File yang Telah Diupload</h5>
+  <div class="row g-4">
+    {% for item in downloads %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="border rounded p-3 bg-dark text-white h-100 position-relative">
+  
+        {% if item.banner_url %}
+        <img src="{{ item.banner_url }}" alt="banner" class="img-fluid mb-2 rounded" style="max-height:150px; object-fit:cover;">
+        {% endif %}
+  
+        <h6 class="fw-bold text-warning mb-1" title="{{ item.title }}">{{ item.title[:50] }}</h6>
+  
+        {% set tipe = item.file_type.lower() %}
+        <span class="badge 
+          {% if tipe == 'materi belajar' %} bg-primary
+          {% elif tipe == 'ijazah micin' %} bg-success
+          {% elif tipe == 'template trading' %} bg-warning text-dark
+          {% elif tipe == 'tools & preset' %} bg-info text-dark
+          {% elif tipe == 'analisa & strategi' %} bg-danger
+          {% elif tipe == 'dokumen komunitas' %} bg-secondary
+          {% elif tipe == 'link external' %} bg-dark text-white
+          {% else %} bg-light text-dark
+          {% endif %}
+          mb-2">
+          {{ item.file_type | capitalize }}
+        </span>
+  
+        <p class="small text-light">{{ item.description[:100] }}...</p>
+  
+        <div class="d-flex justify-content-between mt-2">
+          <!-- Tombol Edit (trigger modal) -->
+          <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-{{ item.id }}">Edit</button>
+  
+          <!-- Tombol Delete -->
+          <form method="post" action="/admin/dashboard/kelola-download/delete/{{ item.id }}" onsubmit="return confirm('Yakin ingin menghapus file ini?');">
+            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+ <!-- Modal Edit -->
+<div class="modal fade" id="editModal-{{ item.id }}" tabindex="-1" aria-labelledby="editModalLabel-{{ item.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <!-- Tambahkan enctype untuk upload file -->
+      <form method="post" action="/admin/dashboard/kelola-download/edit/{{ item.id }}" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel-{{ item.id }}">Edit Data</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Judul</label>
+            <input type="text" name="title" class="form-control" value="{{ item.title }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Deskripsi</label>
+            <textarea name="description" class="form-control" rows="3" required>{{ item.description }}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tipe File</label>
+            <select name="file_type" class="form-select" required>
+              {% for tipe in ["Materi belajar", "Ijazah micin", "Template trading", "Tools & preset", "Analisa & strategi", "Dokumen komunitas", "Link external"] %}
+              <option value="{{ tipe }}" {% if item.file_type == tipe %}selected{% endif %}>{{ tipe }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Ganti File Utama (PDF/ZIP/PPT) <small class="text-muted">(kosongkan jika tidak diganti)</small></label>
+            <input type="file" name="file" class="form-control" accept=".pdf,.zip,.ppt,.pptx,.docx">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Ganti Banner <small class="text-muted">(kosongkan jika tidak diganti)</small></label>
+            <input type="file" name="banner" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+    {% endfor %}
+  </div>
+  
+  
+</div>
+{% endblock %}
